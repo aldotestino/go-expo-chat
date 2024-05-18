@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/handlers"
+	"api/stores"
 	"fmt"
 	"net/http"
 
@@ -13,7 +14,8 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
-	chatHandler := handlers.NewChatHandler()
+	inMemoryChatStore := stores.NewInMemoryChatStore()
+	chatHandler := handlers.NewChatHandler(inMemoryChatStore)
 
 	r.Post("/api/v1/chat", chatHandler.CreateChat)
 	r.Get("/api/v1/chat", chatHandler.GetChats)
