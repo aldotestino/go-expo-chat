@@ -10,6 +10,18 @@ const _layout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="register"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="reset"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };

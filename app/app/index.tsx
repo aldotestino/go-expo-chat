@@ -1,13 +1,13 @@
 import React from "react";
-import { View } from "react-native";
+import { SafeAreaView } from "react-native";
 
 import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
 
 const index = () => {
   return (
-    <View>
+    <SafeAreaView className="flex-1 flex items-center justify-center">
       <ActivityIndicator size="large" />
-    </View>
+    </SafeAreaView>
   );
 };
 
