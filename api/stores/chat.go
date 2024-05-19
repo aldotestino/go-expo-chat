@@ -47,7 +47,7 @@ func NewChat(user1Id, user2Id string) *Chat {
 type ChatStore interface {
 	CreateChat(user1Id, user2Id string) (*Chat, error)
 	GetChats(userId string) ([]*Chat, error)
-	GetChatById(userId string, chatId int) (*Chat, error)
+	GetChatById(chatId int) (*Chat, error)
 	SendMessage(userId, content string, chatId int) (*Message, error)
 }
 
@@ -85,12 +85,9 @@ func (s *InMemoryChatStore) GetChats(userId string) ([]*Chat, error) {
 	return userChats, nil
 }
 
-func (s *InMemoryChatStore) GetChatById(userId string, chatId int) (*Chat, error) {
+func (s *InMemoryChatStore) GetChatById(chatId int) (*Chat, error) {
 	for _, c := range s.chats {
 		if c.Id == chatId {
-			if c.User1Id != userId && c.User2Id != userId {
-				return nil, errors.New("chat not found")
-			}
 			return c, nil
 		}
 	}
@@ -99,7 +96,7 @@ func (s *InMemoryChatStore) GetChatById(userId string, chatId int) (*Chat, error
 }
 
 func (s *InMemoryChatStore) SendMessage(userId, content string, chatId int) (*Message, error) {
-	chat, err := s.GetChatById(userId, chatId)
+	chat, err := s.GetChatById(chatId)
 	if err != nil {
 		return nil, err
 	}
