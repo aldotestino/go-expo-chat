@@ -7,17 +7,18 @@ import (
 )
 
 type ChatHandler struct {
-	db stores.ChatStore
+	cs stores.ChatStore
+	us stores.UserStore
 }
 
-func NewChatHandler(db stores.ChatStore) *ChatHandler {
+func NewChatHandler(cs stores.ChatStore, us stores.UserStore) *ChatHandler {
 	return &ChatHandler{
-		db: db,
+		cs,
+		us,
 	}
 }
 
 type CreateChatBody struct {
-	User1Id string `json:"user1Id"`
 	User2Id string `json:"user2Id"`
 }
 
@@ -32,7 +33,8 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newChat, error := h.db.CreateChat(createChatBody.User1Id, createChatBody.User2Id)
+	user1Id := r.Context().Value("userId").(string)
+	newChat, error := h.cs.CreateChat(user1Id, createChatBody.User2Id)
 
 	if error != nil {
 		w.WriteHeader(http.StatusBadRequest)
