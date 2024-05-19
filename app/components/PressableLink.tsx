@@ -3,6 +3,7 @@ import React from "react";
 import { Pressable } from "react-native";
 
 import { Text } from "@/components/nativewindui/Text";
+import { cn } from "@/lib/cn";
 
 function PressableLink({
   children,
@@ -11,13 +12,15 @@ function PressableLink({
   return (
     <Link {...props} asChild>
       <Pressable>
-        <Text
-          variant="subhead"
-          color="tertiary"
-          className="underline text-primary"
-        >
-          {children}
-        </Text>
+        {({ pressed }) => (
+          <Text
+            variant="subhead"
+            color="tertiary"
+            className={cn("underline text-primary", pressed && "opacity-80")}
+          >
+            {children}
+          </Text>
+        )}
       </Pressable>
     </Link>
   );

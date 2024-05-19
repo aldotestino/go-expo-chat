@@ -3,13 +3,13 @@ import { TextInput, View } from "react-native";
 
 import { Text } from "@/components/nativewindui/Text";
 
-function PressableLink({
+function InputField({
   label,
   children,
   ...props
 }: React.PropsWithChildren<
   React.ComponentProps<typeof TextInput> & {
-    label: string;
+    label?: string;
   }
 >) {
   return (
@@ -27,4 +27,4 @@ function PressableLink({
   );
 }
 
-export default PressableLink;
+export default InputField;

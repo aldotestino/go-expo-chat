@@ -5,7 +5,7 @@ import { Text } from "@/components/nativewindui/Text";
 function Profile() {
   return (
     <SafeAreaView>
-      <Text>profile</Text>
+      <Text>Profile</Text>
     </SafeAreaView>
   );
 }

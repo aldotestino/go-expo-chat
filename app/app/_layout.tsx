@@ -58,7 +58,7 @@ function Layout() {
   return (
     <ClerkProvider
       publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-      // tokenCache={tokenCache}
+      tokenCache={tokenCache}
     >
       <NavThemeProvider value={NAV_THEME[colorScheme]}>
         <StatusBar
