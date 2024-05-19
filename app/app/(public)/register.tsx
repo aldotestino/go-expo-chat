@@ -3,7 +3,7 @@ import { SafeAreaView, View, TextInput, Button, Pressable } from "react-native";
 
 import { Text } from "@/components/nativewindui/Text";
 
-const register = () => {
+function Register() {
   return (
     <SafeAreaView className="flex-1 flex items-center justify-center">
       <View className="flex w-full px-4 gap-6">
@@ -52,6 +52,6 @@ const register = () => {
       </View>
     </SafeAreaView>
   );
-};
+}
 
-export default register;
+export default Register;

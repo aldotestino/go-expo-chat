@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, SafeAreaView } from "react-native";
 
-const reset = () => {
+function Reset() {
   return (
     <SafeAreaView>
       <View>
@@ -9,6 +9,6 @@ const reset = () => {
       </View>
     </SafeAreaView>
   );
-};
+}
 
-export default reset;
+export default Reset;

@@ -41,15 +41,15 @@ const tokenCache = {
   },
 };
 
-const _layout = () => {
+function Layout() {
   return (
     <ClerkProvider
       publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-      tokenCache={tokenCache}
+      // tokenCache={tokenCache}
     >
       <InitialLayout />
     </ClerkProvider>
   );
-};
+}
 
-export default _layout;
+export default Layout;
