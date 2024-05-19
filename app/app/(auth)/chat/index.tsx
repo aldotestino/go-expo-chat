@@ -22,7 +22,7 @@ cssInterop(FlashList, {
 
 function Index() {
   const searchValue = useHeaderSearchBar({
-    hideWhenScrolling: CHATS.length === 0,
+    hideWhenScrolling: true,
     placeholder: "Search",
   });
 

@@ -53,17 +53,13 @@ export {
 
 function Layout() {
   useInitialAndroidBarSync();
-  const { colorScheme, isDarkColorScheme } = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <ClerkProvider
       publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
       tokenCache={tokenCache}
     >
-      <StatusBar
-        key={`root-status-bar-${isDarkColorScheme ? "light" : "dark"}`}
-        style={isDarkColorScheme ? "light" : "dark"}
-      />
       <NavThemeProvider value={NAV_THEME[colorScheme]}>
         <InitialLayout />
       </NavThemeProvider>
