@@ -1,9 +1,9 @@
 import { useSignUp } from "@clerk/clerk-expo";
+import { Link } from "expo-router";
 import { useState } from "react";
-import { SafeAreaView, View, Button, ActivityIndicator } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
 import InputField from "@/components/InputField";
-import PressableLink from "@/components/PressableLink";
 import SubmitButton from "@/components/SubmitButton";
 import { Text } from "@/components/nativewindui/Text";
 
@@ -114,7 +114,9 @@ function Register() {
         {!pendingVerification && (
           <Text variant="subhead" color="tertiary" className="text-center">
             Already have an account?{" "}
-            <PressableLink href="/login">Sign In?</PressableLink>
+            <Link href="/login" className="underline text-primary">
+              Sign In
+            </Link>
           </Text>
         )}
       </View>

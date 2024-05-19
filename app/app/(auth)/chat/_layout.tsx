@@ -14,6 +14,8 @@ function Layout() {
         options={{
           title: "Chat",
           headerLargeTitle: true,
+          headerTransparent: true,
+          headerBlurEffect: "regular",
           headerRight: () => <NewChatButton />,
         }}
       />
@@ -23,6 +25,8 @@ function Layout() {
           presentation: "modal",
           animation: "fade_from_bottom", // for android
           title: "New Chat",
+          headerTransparent: true,
+          headerBlurEffect: "regular",
         }}
       />
     </Stack>

@@ -1,9 +1,9 @@
 import { useSignIn } from "@clerk/clerk-expo";
+import { Link } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView, View } from "react-native";
 
 import InputField from "@/components/InputField";
-import PressableLink from "@/components/PressableLink";
 import SubmitButton from "@/components/SubmitButton";
 import { Text } from "@/components/nativewindui/Text";
 
@@ -35,13 +35,15 @@ function Login() {
   return (
     <SafeAreaView className="flex-1 flex items-center justify-center">
       <View className="flex w-full px-4 gap-6">
-        <View className="flex items-center">
+        <View className="flex items-center px-12">
           <Text variant="title1" className="font-bold">
             Welcome back
           </Text>
           <Text variant="subhead" color="tertiary" className="text-center">
             Sign in to your account to continue or{" "}
-            <PressableLink href="/register">create an account</PressableLink>
+            <Link href="/register" className="underline text-primary">
+              create an account
+            </Link>
           </Text>
         </View>
 
@@ -61,7 +63,9 @@ function Login() {
             onChangeText={setPassword}
             secureTextEntry
           >
-            <PressableLink href="/reset">Forgot password?</PressableLink>
+            <Link href="/reset" className="underline text-primary">
+              Forgot password?
+            </Link>
           </InputField>
           <SubmitButton onPress={onSignIn} title="Sign In" loading={loading} />
         </View>

@@ -60,11 +60,11 @@ function Layout() {
       publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
       tokenCache={tokenCache}
     >
+      <StatusBar
+        key={`root-status-bar-${isDarkColorScheme ? "light" : "dark"}`}
+        style={isDarkColorScheme ? "light" : "dark"}
+      />
       <NavThemeProvider value={NAV_THEME[colorScheme]}>
-        <StatusBar
-          key={`root-status-bar-${isDarkColorScheme ? "light" : "dark"}`}
-          style={isDarkColorScheme ? "light" : "dark"}
-        />
         <InitialLayout />
       </NavThemeProvider>
     </ClerkProvider>
