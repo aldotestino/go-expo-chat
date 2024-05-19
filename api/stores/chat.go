@@ -47,8 +47,8 @@ func NewChat(user1Id, user2Id string) *Chat {
 type ChatStore interface {
 	CreateChat(user1Id, user2Id string) (*Chat, error)
 	GetChats(userId string) ([]*Chat, error)
-	GetChatById(userId, chatId string) (*Chat, error)
-	SendMessage(userId, chatId, content string) (*Message, error)
+	GetChatById(userId string, chatId int) (*Chat, error)
+	SendMessage(userId, content string, chatId int) (*Message, error)
 }
 
 type InMemoryChatStore struct {
@@ -74,13 +74,42 @@ func (s *InMemoryChatStore) CreateChat(user1Id, user2Id string) (*Chat, error) {
 }
 
 func (s *InMemoryChatStore) GetChats(userId string) ([]*Chat, error) {
-	return nil, nil
+	userChats := make([]*Chat, 0)
+
+	for _, c := range s.chats {
+		if c.User1Id == userId || c.User2Id == userId {
+			userChats = append(userChats, c)
+		}
+	}
+
+	return userChats, nil
 }
 
-func (s *InMemoryChatStore) GetChatById(userId, chatId string) (*Chat, error) {
-	return nil, nil
+func (s *InMemoryChatStore) GetChatById(userId string, chatId int) (*Chat, error) {
+	for _, c := range s.chats {
+		if c.Id == chatId {
+			if c.User1Id != userId && c.User2Id != userId {
+				return nil, errors.New("chat not found")
+			}
+			return c, nil
+		}
+	}
+
+	return nil, errors.New("chat not found")
 }
 
-func (s *InMemoryChatStore) SendMessage(userId, chatId, content string) (*Message, error) {
-	return nil, nil
+func (s *InMemoryChatStore) SendMessage(userId, content string, chatId int) (*Message, error) {
+	chat, err := s.GetChatById(userId, chatId)
+	if err != nil {
+		return nil, err
+	}
+
+	if chat.User1Id != userId && chat.User2Id != userId {
+		return nil, errors.New("chat not found")
+	}
+
+	message := NewMessage(userId, content)
+	chat.Messages = append(chat.Messages, message)
+
+	return message, nil
 }

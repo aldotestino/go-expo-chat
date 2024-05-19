@@ -35,16 +35,15 @@ func init() {
 
 func main() {
 
-	userStore := stores.NewClerkUserStore(&clerkClient)
-
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
 	injectActiveSession := clerk.WithSessionV2(clerkClient)
 	r.Use(injectActiveSession, middlewares.AuthMiddleware)
 
+	clerkUserStore := stores.NewClerkUserStore(&clerkClient)
 	inMemoryChatStore := stores.NewInMemoryChatStore()
-	chatHandler := handlers.NewChatHandler(inMemoryChatStore, userStore)
+	chatHandler := handlers.NewChatHandler(inMemoryChatStore, clerkUserStore)
 
 	r.Post("/api/v1/chat", chatHandler.CreateChat)
 	r.Get("/api/v1/chat", chatHandler.GetChats)
