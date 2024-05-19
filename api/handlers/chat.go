@@ -33,6 +33,14 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, err = h.us.GetUserById(createChatBody.User2Id)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("user not found"))
+		return
+	}
+
 	user1Id := r.Context().Value("userId").(string)
 	newChat, error := h.cs.CreateChat(user1Id, createChatBody.User2Id)
 
