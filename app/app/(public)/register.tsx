@@ -123,20 +123,22 @@ function Register() {
             </>
           )}
         </View>
-        <Text variant="subhead" color="tertiary" className="text-center">
-          Already have an account?{" "}
-          <Link href="/login" asChild>
-            <Pressable>
-              <Text
-                variant="subhead"
-                color="tertiary"
-                className="underline text-indigo-500"
-              >
-                Sign in
-              </Text>
-            </Pressable>
-          </Link>
-        </Text>
+        {!pendingVerification && (
+          <Text variant="subhead" color="tertiary" className="text-center">
+            Already have an account?{" "}
+            <Link href="/login" asChild>
+              <Pressable>
+                <Text
+                  variant="subhead"
+                  color="tertiary"
+                  className="underline text-indigo-500"
+                >
+                  Sign in
+                </Text>
+              </Pressable>
+            </Link>
+          </Text>
+        )}
       </View>
     </SafeAreaView>
   );

@@ -9,7 +9,7 @@ import { Text } from "@/components/nativewindui/Text";
 function Login() {
   const { signIn, setActive, isLoaded } = useSignIn();
 
-  const [username, setUsername] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ function Login() {
     setLoading(true);
     try {
       const completeSignIn = await signIn.create({
-        identifier: username,
+        identifier,
         password,
       });
 
@@ -58,8 +58,8 @@ function Login() {
           <View className="flex gap-2">
             <Text>Username or Email</Text>
             <TextInput
-              value={username}
-              onChangeText={setUsername}
+              value={identifier}
+              onChangeText={setIdentifier}
               autoCapitalize="none"
               placeholder="johndoe"
               className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
