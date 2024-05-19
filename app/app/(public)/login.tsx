@@ -1,8 +1,9 @@
 import { useSignIn } from "@clerk/clerk-expo";
-import { Link } from "expo-router";
 import { useState } from "react";
-import { SafeAreaView, View, TextInput, Button, Pressable } from "react-native";
+import { SafeAreaView, View, TextInput, Button } from "react-native";
 
+import InputField from "@/components/InputField";
+import PressableLink from "@/components/PressableLink";
 import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
 import { Text } from "@/components/nativewindui/Text";
 
@@ -40,50 +41,26 @@ function Login() {
           </Text>
           <Text variant="subhead" color="tertiary" className="text-center">
             Sign in to your account to continue or{" "}
-            <Link href="/register" asChild>
-              <Pressable>
-                <Text
-                  variant="subhead"
-                  color="tertiary"
-                  className="underline text-indigo-500"
-                >
-                  Create an account
-                </Text>
-              </Pressable>
-            </Link>
+            <PressableLink href="/register">create an account</PressableLink>
           </Text>
         </View>
 
         <View className="flex gap-4">
-          <View className="flex gap-2">
-            <Text>Username or Email</Text>
-            <TextInput
-              value={identifier}
-              onChangeText={setIdentifier}
-              autoCapitalize="none"
-              placeholder="johndoe"
-              className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
-            />
-          </View>
-          <View className="flex gap-2">
-            <View className="flex flex-row justify-between items-center">
-              <Text>Password</Text>
-              <Link href="/reset" asChild>
-                <Pressable>
-                  <Text variant="subhead" className="underline text-indigo-500">
-                    Forgot password?
-                  </Text>
-                </Pressable>
-              </Link>
-            </View>
-            <TextInput
-              value={password}
-              onChangeText={setPassword}
-              placeholder="****"
-              secureTextEntry
-              className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
-            />
-          </View>
+          <InputField
+            label="Username or Email"
+            placeholder="johndoe"
+            value={identifier}
+            onChangeText={setIdentifier}
+          />
+          <InputField
+            label="Password"
+            placeholder="****"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          >
+            <PressableLink href="/reset">Forgot password?</PressableLink>
+          </InputField>
           {!loading ? (
             <Button onPress={onSignIn} title="Sign In" />
           ) : (

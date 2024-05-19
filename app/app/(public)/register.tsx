@@ -3,6 +3,9 @@ import { Link } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView, View, TextInput, Button, Pressable } from "react-native";
 
+import InputField from "@/components/InputField";
+import PressableLink from "@/components/PressableLink";
+import SubmitButton from "@/components/SubmitButton";
 import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
 import { Text } from "@/components/nativewindui/Text";
 
@@ -68,36 +71,25 @@ function Register() {
         <View className="flex gap-4">
           {!pendingVerification ? (
             <>
-              <View className="flex gap-2">
-                <Text>Email</Text>
-                <TextInput
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  placeholder="john.doe@mail.com"
-                  className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
-                />
-              </View>
-              <View className="flex gap-2">
-                <Text>Username</Text>
-                <TextInput
-                  value={username}
-                  onChangeText={setUsername}
-                  autoCapitalize="none"
-                  placeholder="johndoe"
-                  className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
-                />
-              </View>
-              <View className="flex gap-2">
-                <Text>Password</Text>
-                <TextInput
-                  value={password}
-                  onChangeText={setPassword}
-                  placeholder="****"
-                  secureTextEntry
-                  className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
-                />
-              </View>
+              <InputField
+                label="Email"
+                placeholder="john.doe@gmail.com"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <InputField
+                label="Username"
+                placeholder="johndoe"
+                value={username}
+                onChangeText={setUsername}
+              />
+              <InputField
+                label="Password"
+                placeholder="****"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
               {!loading ? (
                 <Button onPress={onSignUp} title="Sign Up" />
               ) : (
@@ -106,37 +98,24 @@ function Register() {
             </>
           ) : (
             <>
-              <View className="flex gap-2">
-                <Text>Verification Code</Text>
-                <TextInput
-                  value={code}
-                  onChangeText={setCode}
-                  placeholder="123456"
-                  className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
-                />
-              </View>
-              {!loading ? (
-                <Button onPress={onVerify} title="Verify" />
-              ) : (
-                <ActivityIndicator />
-              )}
+              <InputField
+                label="Verification Code"
+                placeholder="123456"
+                value={code}
+                onChangeText={setCode}
+              />
+              <SubmitButton
+                onPress={onVerify}
+                title="Verify"
+                loading={loading}
+              />
             </>
           )}
         </View>
         {!pendingVerification && (
           <Text variant="subhead" color="tertiary" className="text-center">
             Already have an account?{" "}
-            <Link href="/login" asChild>
-              <Pressable>
-                <Text
-                  variant="subhead"
-                  color="tertiary"
-                  className="underline text-indigo-500"
-                >
-                  Sign in
-                </Text>
-              </Pressable>
-            </Link>
+            <PressableLink href="/login">Sign In?</PressableLink>
           </Text>
         )}
       </View>

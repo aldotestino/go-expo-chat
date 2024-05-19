@@ -2,9 +2,14 @@ import "../global.css";
 import "expo-dev-client";
 
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
+import { ThemeProvider as NavThemeProvider } from "@react-navigation/native";
 import { Slot, useRouter, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+
+import { useColorScheme, useInitialAndroidBarSync } from "@/lib/useColorScheme";
+import { NAV_THEME } from "@/theme";
 
 function InitialLayout() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -41,13 +46,27 @@ const tokenCache = {
   },
 };
 
+export {
+  // Catch any errors thrown by the Layout component.
+  ErrorBoundary,
+} from "expo-router";
+
 function Layout() {
+  useInitialAndroidBarSync();
+  const { colorScheme, isDarkColorScheme } = useColorScheme();
+
   return (
     <ClerkProvider
       publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
       // tokenCache={tokenCache}
     >
-      <InitialLayout />
+      <NavThemeProvider value={NAV_THEME[colorScheme]}>
+        <StatusBar
+          key={`root-status-bar-${isDarkColorScheme ? "light" : "dark"}`}
+          style={isDarkColorScheme ? "light" : "dark"}
+        />
+        <InitialLayout />
+      </NavThemeProvider>
     </ClerkProvider>
   );
 }

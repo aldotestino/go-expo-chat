@@ -1,8 +1,9 @@
 import { useSignIn } from "@clerk/clerk-expo";
 import { useState } from "react";
-import { SafeAreaView, View, TextInput, Button } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
-import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
+import InputField from "@/components/InputField";
+import SubmitButton from "@/components/SubmitButton";
 import { Text } from "@/components/nativewindui/Text";
 
 function Reset() {
@@ -64,48 +65,37 @@ function Reset() {
         <View className="flex gap-4">
           {!successfulCreation ? (
             <>
-              <View className="flex gap-2">
-                <Text>Email</Text>
-                <TextInput
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  placeholder="johndoe"
-                  className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
-                />
-              </View>
-              {!loading ? (
-                <Button onPress={onRequestReset} title="Reset Password" />
-              ) : (
-                <ActivityIndicator />
-              )}
+              <InputField
+                label="Email"
+                placeholder="john.doe@mail.test"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <SubmitButton
+                onPress={onRequestReset}
+                title="Reset Password"
+                loading={loading}
+              />
             </>
           ) : (
             <>
-              <View className="flex gap-2">
-                <Text>Code</Text>
-                <TextInput
-                  value={code}
-                  onChangeText={setCode}
-                  placeholder="123456"
-                  className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
-                />
-              </View>
-              <View className="flex gap-2">
-                <Text>New Password</Text>
-                <TextInput
-                  value={password}
-                  onChangeText={setPassword}
-                  placeholder="****"
-                  secureTextEntry
-                  className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
-                />
-              </View>
-              {!loading ? (
-                <Button onPress={onReset} title="Set new Password" />
-              ) : (
-                <ActivityIndicator />
-              )}
+              <InputField
+                label="Code"
+                placeholder="123456"
+                value={code}
+                onChangeText={setCode}
+              />
+              <InputField
+                label="New Password"
+                placeholder="****"
+                value={password}
+                onChangeText={setPassword}
+              />
+              <SubmitButton
+                onPress={onReset}
+                title="Set new Password"
+                loading={loading}
+              />
             </>
           )}
         </View>
