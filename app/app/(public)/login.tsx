@@ -1,10 +1,10 @@
 import { useSignIn } from "@clerk/clerk-expo";
 import { useState } from "react";
-import { SafeAreaView, View, TextInput, Button } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
 import InputField from "@/components/InputField";
 import PressableLink from "@/components/PressableLink";
-import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
+import SubmitButton from "@/components/SubmitButton";
 import { Text } from "@/components/nativewindui/Text";
 
 function Login() {
@@ -47,12 +47,14 @@ function Login() {
 
         <View className="flex gap-4">
           <InputField
+            textContentType="username"
             label="Username or Email"
             placeholder="johndoe"
             value={identifier}
             onChangeText={setIdentifier}
           />
           <InputField
+            textContentType="password"
             label="Password"
             placeholder="****"
             value={password}
@@ -61,11 +63,7 @@ function Login() {
           >
             <PressableLink href="/reset">Forgot password?</PressableLink>
           </InputField>
-          {!loading ? (
-            <Button onPress={onSignIn} title="Sign In" />
-          ) : (
-            <ActivityIndicator />
-          )}
+          <SubmitButton onPress={onSignIn} title="Sign In" loading={loading} />
         </View>
       </View>
     </SafeAreaView>

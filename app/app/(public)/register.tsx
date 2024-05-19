@@ -1,12 +1,10 @@
 import { useSignUp } from "@clerk/clerk-expo";
-import { Link } from "expo-router";
 import { useState } from "react";
-import { SafeAreaView, View, TextInput, Button, Pressable } from "react-native";
+import { SafeAreaView, View, Button, ActivityIndicator } from "react-native";
 
 import InputField from "@/components/InputField";
 import PressableLink from "@/components/PressableLink";
 import SubmitButton from "@/components/SubmitButton";
-import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
 import { Text } from "@/components/nativewindui/Text";
 
 function Register() {
@@ -90,15 +88,16 @@ function Register() {
                 onChangeText={setPassword}
                 secureTextEntry
               />
-              {!loading ? (
-                <Button onPress={onSignUp} title="Sign Up" />
-              ) : (
-                <ActivityIndicator />
-              )}
+              <SubmitButton
+                onPress={onSignUp}
+                title="Sign Up"
+                loading={loading}
+              />
             </>
           ) : (
             <>
               <InputField
+                textContentType="oneTimeCode"
                 label="Verification Code"
                 placeholder="123456"
                 value={code}

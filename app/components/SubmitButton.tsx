@@ -1,6 +1,4 @@
-import { Button } from "react-native";
-
-import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
+import { ActivityIndicator, Button } from "react-native";
 
 function SubmitButton({
   loading,

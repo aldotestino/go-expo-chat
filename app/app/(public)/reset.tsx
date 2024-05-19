@@ -66,6 +66,7 @@ function Reset() {
           {!successfulCreation ? (
             <>
               <InputField
+                textContentType="emailAddress"
                 label="Email"
                 placeholder="john.doe@mail.test"
                 value={email}
@@ -80,12 +81,14 @@ function Reset() {
           ) : (
             <>
               <InputField
+                textContentType="oneTimeCode"
                 label="Code"
                 placeholder="123456"
                 value={code}
                 onChangeText={setCode}
               />
               <InputField
+                textContentType="newPassword"
                 label="New Password"
                 placeholder="****"
                 value={password}

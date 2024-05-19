@@ -1,6 +1,4 @@
-import { SafeAreaView } from "react-native";
-
-import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
+import { ActivityIndicator, SafeAreaView } from "react-native";
 
 function Index() {
   return (

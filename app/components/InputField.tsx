@@ -21,7 +21,7 @@ function PressableLink({
       <TextInput
         {...props}
         autoCapitalize="none"
-        className="bg-gray-200 placeholder:text-gray-500 h-10 px-3 py-2 rounded-md"
+        className="border border-transparent bg-gray-200 dark:bg-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-200 dark:text-white h-10 px-3 py-2 rounded-md focus:border focus:border-primary"
       />
     </View>
   );
