@@ -13,7 +13,7 @@ function InputField({
   }
 >) {
   return (
-    <View className="flex gap-2">
+    <View className="flex gap-2 w-full">
       <View className="flex flex-row justify-between items-center">
         <Text>{label}</Text>
         {children}

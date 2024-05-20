@@ -21,10 +21,12 @@ function Layout() {
       <Tabs.Screen
         name="profile"
         options={{
+          unmountOnBlur: true,
           title: "Profile",
           tabBarIcon: ({ focused, color }) => (
             <Icon name="person" color={focused ? colors.primary : color} />
           ),
+          headerShown: false,
         }}
       />
     </Tabs>

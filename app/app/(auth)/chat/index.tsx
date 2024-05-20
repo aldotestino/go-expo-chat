@@ -90,7 +90,7 @@ function RenderItemSeparator() {
 function RenderItem({ item }: { item: Chat }) {
   return (
     <View className="px-4 py-2 flex flex-row gap-4 items-center">
-      <Avatar alt="NativeWindUI Avatar">
+      <Avatar alt={`${item.username} profile image`}>
         <AvatarImage source={{ uri: item.imageUrl }} />
         <AvatarFallback>
           <Text>{item.username[0]}</Text>

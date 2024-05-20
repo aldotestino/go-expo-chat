@@ -1,7 +1,7 @@
 import { ActivityIndicator, Button } from "react-native";
 
 function SubmitButton({
-  loading,
+  loading = false,
   ...props
 }: React.ComponentProps<typeof Button> & {
   loading?: boolean;
