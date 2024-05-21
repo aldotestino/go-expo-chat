@@ -9,8 +9,8 @@ import {
   AvatarImage,
 } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
-import { cn } from "@/lib/cn";
 import { useHeaderSubmit } from "@/lib/useHeaderSubmit";
+import { cn } from "@/lib/utils";
 
 function Profile() {
   const { user } = useUser();
@@ -68,7 +68,7 @@ function Profile() {
               </Avatar>
               <Pressable onPress={onPickImage}>
                 {({ pressed }) => (
-                  <Text className={cn("text-primary", pressed && "opacity-80")}>
+                  <Text className={cn("text-primary", pressed && "opacity-50")}>
                     Update
                   </Text>
                 )}

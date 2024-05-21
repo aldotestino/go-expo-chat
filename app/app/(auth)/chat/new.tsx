@@ -4,7 +4,7 @@ import { Text } from "@/components/nativewindui/Text";
 import { useDebounce } from "@/lib/useDebounce";
 import { useHeaderSearchBar } from "@/lib/useHeaderSearchBar";
 
-export default function ModalScreen() {
+function NewChatModal() {
   const searchValue = useHeaderSearchBar({
     placeholder: "Search by username",
     autoCapitalize: "none",
@@ -18,3 +18,5 @@ export default function ModalScreen() {
     </SafeAreaView>
   );
 }
+
+export default NewChatModal;

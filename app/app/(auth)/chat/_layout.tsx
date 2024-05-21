@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 
 import NewChatButton from "@/components/NewChatButton";
 
-function Layout() {
+function ChatLayout() {
   return (
     <Stack
       screenOptions={{
@@ -20,7 +20,7 @@ function Layout() {
         }}
       />
       <Stack.Screen
-        name="modal"
+        name="new"
         options={{
           presentation: "modal",
           animation: "fade_from_bottom", // for android
@@ -33,4 +33,4 @@ function Layout() {
   );
 }
 
-export default Layout;
+export default ChatLayout;

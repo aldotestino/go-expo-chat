@@ -1,8 +1,8 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { Icon } from "@roninoss/icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
 import React from "react";
-import { View, SafeAreaView, Pressable, Switch } from "react-native";
+import { View, SafeAreaView, Pressable } from "react-native";
 
 import SubmitButton from "@/components/SubmitButton";
 import ThemeSwitch from "@/components/ThemeSwitch";
@@ -12,11 +12,11 @@ import {
   AvatarImage,
 } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
-import { cn } from "@/lib/cn";
 import { useColorScheme } from "@/lib/useColorScheme";
+import { cn } from "@/lib/utils";
 
 function Settings() {
-  const { colors, colorScheme, setColorScheme } = useColorScheme();
+  const { colors } = useColorScheme();
   const { user } = useUser();
   const { signOut } = useAuth();
 
@@ -37,7 +37,7 @@ function Settings() {
               <View
                 className={cn(
                   "border border-muted/40 w-full flex flex-row justify-between items-center p-4 rounded-xl bg-card text-card-foreground",
-                  pressed && "opacity-80",
+                  pressed && "opacity-50",
                 )}
               >
                 <View className="flex flex-row items-center gap-4">
@@ -49,7 +49,11 @@ function Settings() {
                   </Avatar>
                   <Text variant="title3">{user?.username}</Text>
                 </View>
-                <Icon name="chevron-right" size={24} color={colors.grey} />
+                <Ionicons
+                  name="chevron-forward"
+                  size={24}
+                  color={colors.grey}
+                />
               </View>
             )}
           </Pressable>

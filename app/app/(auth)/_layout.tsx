@@ -1,4 +1,4 @@
-import { Icon } from "@roninoss/icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
 
 import { useColorScheme } from "@/lib/useColorScheme";
@@ -13,7 +13,11 @@ function Layout() {
         options={{
           title: "Chat",
           tabBarIcon: ({ focused, color }) => (
-            <Icon name="message" color={focused ? colors.primary : color} />
+            <Ionicons
+              name="chatbubbles"
+              size={32}
+              color={focused ? colors.primary : color}
+            />
           ),
           headerShown: false,
         }}
@@ -24,7 +28,11 @@ function Layout() {
           unmountOnBlur: true,
           title: "Settings",
           tabBarIcon: ({ focused, color }) => (
-            <Icon name="cog" color={focused ? colors.primary : color} />
+            <Ionicons
+              name="cog"
+              size={32}
+              color={focused ? colors.primary : color}
+            />
           ),
           headerShown: false,
         }}

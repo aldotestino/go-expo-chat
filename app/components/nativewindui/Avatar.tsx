@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils";
 
 interface AvatarRootProps {
   alt: string;
