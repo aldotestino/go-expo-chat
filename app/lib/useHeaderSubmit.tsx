@@ -2,15 +2,22 @@ import { useNavigation } from "expo-router";
 import React from "react";
 import { Button, TextInput } from "react-native";
 
+import { useColorScheme } from "@/lib/useColorScheme";
+
 export function useHeaderSubmit({
   onSubmit,
   onCancel,
+  submitButtonTitle = "Save",
+  cancelButtonTitle = "Cancel",
 }: {
   onSubmit: () => Promise<void>;
   onCancel: () => void;
+  submitButtonTitle?: string;
+  cancelButtonTitle?: string;
 }) {
   const navigation = useNavigation();
 
+  const { colors } = useColorScheme();
   const [isShown, setIsShown] = React.useState(false);
   const inputRef = React.useRef<TextInput>(null);
 
@@ -34,10 +41,16 @@ export function useHeaderSubmit({
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: isShown
-        ? () => <Button title="Save" onPress={handleOnSave} />
+        ? () => <Button title={submitButtonTitle} onPress={handleOnSave} />
         : null,
       headerLeft: isShown
-        ? () => <Button title="Cancel" onPress={handleOnCancel} />
+        ? () => (
+            <Button
+              title={cancelButtonTitle}
+              color={colors.destructive}
+              onPress={handleOnCancel}
+            />
+          )
         : null,
     });
   }, [navigation, isShown, handleOnSave, handleOnCancel]);

@@ -10,7 +10,6 @@ import {
 } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
 import { cn } from "@/lib/cn";
-import { useColorScheme } from "@/lib/useColorScheme";
 import { useHeaderSubmit } from "@/lib/useHeaderSubmit";
 
 function Profile() {
