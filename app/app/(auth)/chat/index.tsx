@@ -82,9 +82,7 @@ function keyExtractor(item: Chat) {
 }
 
 function RenderItemSeparator() {
-  const { colors } = useColorScheme();
-
-  return <View className="border-b" style={{ borderColor: colors.grey4 }} />;
+  return <View className="border-b border-muted/40" />;
 }
 
 function RenderItem({ item }: { item: Chat }) {

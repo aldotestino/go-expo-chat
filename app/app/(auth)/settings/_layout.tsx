@@ -10,10 +10,16 @@ function Layout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Profile",
+          title: "Settings",
           headerLargeTitle: true,
           headerTransparent: true,
           headerBlurEffect: "regular",
+        }}
+      />
+      <Stack.Screen
+        name="profile"
+        options={{
+          title: "Edit Profile",
         }}
       />
     </Stack>

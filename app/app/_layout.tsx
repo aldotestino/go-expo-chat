@@ -5,7 +5,6 @@ import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { ThemeProvider as NavThemeProvider } from "@react-navigation/native";
 import { Slot, useRouter, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 
 import { useColorScheme, useInitialAndroidBarSync } from "@/lib/useColorScheme";

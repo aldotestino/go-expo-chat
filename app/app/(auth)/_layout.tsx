@@ -19,12 +19,12 @@ function Layout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="settings"
         options={{
           unmountOnBlur: true,
-          title: "Profile",
+          title: "Settings",
           tabBarIcon: ({ focused, color }) => (
-            <Icon name="person" color={focused ? colors.primary : color} />
+            <Icon name="cog" color={focused ? colors.primary : color} />
           ),
           headerShown: false,
         }}

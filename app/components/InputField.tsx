@@ -20,8 +20,9 @@ function InputField({
       </View>
       <TextInput
         {...props}
+        autoCorrect={false}
         autoCapitalize="none"
-        className="border border-transparent bg-gray-200 dark:bg-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-200 dark:text-white h-10 px-3 py-2 rounded-md focus:border focus:border-primary"
+        className="border border-muted/40 bg-card text-card-foreground h-10 px-3 py-2 rounded-lg focus:border-primary"
       />
     </View>
   );
