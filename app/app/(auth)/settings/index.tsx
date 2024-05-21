@@ -2,9 +2,10 @@ import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Icon } from "@roninoss/icons";
 import { Link } from "expo-router";
 import React from "react";
-import { View, SafeAreaView, Pressable } from "react-native";
+import { View, SafeAreaView, Pressable, Switch } from "react-native";
 
 import SubmitButton from "@/components/SubmitButton";
+import ThemeSwitch from "@/components/ThemeSwitch";
 import {
   Avatar,
   AvatarFallback,
@@ -15,7 +16,7 @@ import { cn } from "@/lib/cn";
 import { useColorScheme } from "@/lib/useColorScheme";
 
 function Settings() {
-  const { colors } = useColorScheme();
+  const { colors, colorScheme, setColorScheme } = useColorScheme();
   const { user } = useUser();
   const { signOut } = useAuth();
 
@@ -29,7 +30,7 @@ function Settings() {
 
   return (
     <SafeAreaView className="flex-1 flex items-center">
-      <View className="flex w-full px-4 gap-6 pt-4 items-center">
+      <View className="flex w-full px-4 gap-4 pt-4 items-center">
         <Link href="/settings/profile" asChild>
           <Pressable className="w-full">
             {({ pressed }) => (
@@ -53,6 +54,10 @@ function Settings() {
             )}
           </Pressable>
         </Link>
+        <View className="border border-muted/40 w-full flex flex-row justify-between items-center p-4 rounded-xl bg-card text-card-foreground">
+          <Text variant="body">Dark mode</Text>
+          <ThemeSwitch />
+        </View>
         <SubmitButton
           title="Sign Out"
           onPress={onSignOut}
