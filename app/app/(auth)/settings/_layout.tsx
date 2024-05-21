@@ -19,7 +19,7 @@ function Layout() {
       <Stack.Screen
         name="profile"
         options={{
-          title: "Edit Profile",
+          title: "Profile",
         }}
       />
     </Stack>

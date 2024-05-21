@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SafeAreaView, View } from "react-native";
 
 import InputField from "@/components/InputField";
+import SignInWithOAuth from "@/components/SignInWithOAuth";
 import SubmitButton from "@/components/SubmitButton";
 import { Text } from "@/components/nativewindui/Text";
 
@@ -68,6 +69,14 @@ function Login() {
             </Link>
           </InputField>
           <SubmitButton onPress={onSignIn} title="Sign In" loading={loading} />
+          <View className="flex flex-row gap-2 items-center w-full">
+            <View className="border border-muted/40 flex-1" />
+            <Text variant="subhead" color="tertiary" className="text-center">
+              or
+            </Text>
+            <View className="border border-muted/40 flex-1" />
+          </View>
+          <SignInWithOAuth />
         </View>
       </View>
     </SafeAreaView>
