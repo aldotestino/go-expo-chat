@@ -1,7 +1,6 @@
 import { useNavigation } from "expo-router";
 import React from "react";
-import { Button } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { Button, TextInput } from "react-native";
 
 export function useHeaderSubmit({
   onSubmit,
@@ -18,9 +17,12 @@ export function useHeaderSubmit({
   const show = () => setIsShown(true);
 
   const handleOnSave = async () => {
-    await onSubmit();
-    inputRef.current?.blur();
-    setIsShown(false);
+    try {
+      await onSubmit();
+    } finally {
+      inputRef.current?.blur();
+      setIsShown(false);
+    }
   };
 
   const handleOnCancel = () => {
@@ -38,7 +40,7 @@ export function useHeaderSubmit({
         ? () => <Button title="Cancel" onPress={handleOnCancel} />
         : null,
     });
-  }, [navigation, isShown, onSubmit, onCancel]);
+  }, [navigation, isShown, handleOnSave, handleOnCancel]);
 
   return { isShown, show, inputRef };
 }

@@ -14,7 +14,6 @@ import { useColorScheme } from "@/lib/useColorScheme";
 import { useHeaderSubmit } from "@/lib/useHeaderSubmit";
 
 function Profile() {
-  const { colors } = useColorScheme();
   const { user } = useUser();
 
   const [username, setUsername] = useState(user?.username || "");
@@ -25,11 +24,13 @@ function Profile() {
   });
 
   async function onUpdate() {
+    if (username === user?.username) return;
     try {
       await user?.update({
         username,
       });
     } catch (err: any) {
+      setUsername(user?.username || "");
       alert(err.errors[0].message);
     }
   }
