@@ -1,7 +1,7 @@
 import { FlashList } from "@shopify/flash-list";
 import { cssInterop } from "nativewind";
 
-import ChatPreviewItem from "@/components/ChatPreviewItem";
+import ChatItemList from "@/components/ChatItemList";
 import EmptyChat from "@/components/EmptyChat";
 import Separator from "@/components/Separator";
 import { FAKE_CHATS } from "@/lib/constants";
@@ -20,7 +20,7 @@ function keyExtractor(item: ChatPreview) {
 const USE_FAKE_DATA = true;
 const CHATS: ChatPreview[] = USE_FAKE_DATA ? FAKE_CHATS : [];
 
-function Chat() {
+function ChatList() {
   const searchValue = useHeaderSearchBar({
     hideWhenScrolling: true,
     placeholder: "Search",
@@ -42,10 +42,10 @@ function Chat() {
       extraData={searchValue}
       keyExtractor={keyExtractor}
       ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
-      renderItem={ChatPreviewItem}
+      renderItem={ChatItemList}
       ListEmptyComponent={CHATS.length === 0 ? EmptyChat : undefined}
     />
   );
 }
 
-export default Chat;
+export default ChatList;

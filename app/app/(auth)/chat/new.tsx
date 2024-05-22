@@ -2,7 +2,7 @@ import { FlashList } from "@shopify/flash-list";
 import { cssInterop } from "nativewind";
 
 import Separator from "@/components/Separator";
-import UserItem from "@/components/UserItem";
+import UserItemList from "@/components/UserItemList";
 import { Text } from "@/components/nativewindui/Text";
 import { FAKE_CHATS } from "@/lib/constants";
 import { ChatPreview } from "@/lib/types";
@@ -31,6 +31,7 @@ function NoUsersFound() {
 
 function NewChatModal() {
   const searchValue = useHeaderSearchBar({
+    autoFocus: true,
     placeholder: "Search by username",
     autoCapitalize: "none",
   });
@@ -53,7 +54,7 @@ function NewChatModal() {
       extraData={searchValue}
       keyExtractor={keyExtractor}
       ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
-      renderItem={UserItem}
+      renderItem={UserItemList}
       ListEmptyComponent={debouncedSearchValue ? NoUsersFound : undefined}
     />
   );

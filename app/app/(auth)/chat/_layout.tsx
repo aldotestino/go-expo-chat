@@ -20,6 +20,13 @@ function ChatLayout() {
         }}
       />
       <Stack.Screen
+        name="[id]"
+        options={{
+          headerTransparent: true,
+          headerBlurEffect: "regular",
+        }}
+      />
+      <Stack.Screen
         name="new"
         options={{
           presentation: "modal",
