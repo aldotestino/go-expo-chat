@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 function NewChatButton() {
   const { colors } = useColorScheme();
   return (
-    <Link href="/chat/new" asChild>
+    <Link href="/chats/new" asChild>
       <Pressable>
         {({ pressed }) => (
           <View className={cn(pressed && "opacity-50")}>

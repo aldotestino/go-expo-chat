@@ -2,13 +2,9 @@ import { Stack } from "expo-router";
 
 import NewChatButton from "@/components/NewChatButton";
 
-function ChatLayout() {
+function ChatsLayout() {
   return (
-    <Stack
-      screenOptions={{
-        animation: "ios",
-      }}
-    >
+    <Stack>
       <Stack.Screen
         name="index"
         options={{
@@ -17,13 +13,6 @@ function ChatLayout() {
           headerTransparent: true,
           headerBlurEffect: "regular",
           headerRight: () => <NewChatButton />,
-        }}
-      />
-      <Stack.Screen
-        name="[id]"
-        options={{
-          headerTransparent: true,
-          headerBlurEffect: "regular",
         }}
       />
       <Stack.Screen
@@ -40,4 +29,4 @@ function ChatLayout() {
   );
 }
 
-export default ChatLayout;
+export default ChatsLayout;

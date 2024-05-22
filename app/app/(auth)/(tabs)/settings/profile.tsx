@@ -61,9 +61,9 @@ function Profile() {
   }
 
   return (
-    <SafeAreaView className="flex-1 flex items-center">
-      <ScrollView className="w-full">
-        <View className="flex w-full px-4 pt-4 gap-6 items-center">
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <SafeAreaView>
+        <View className="flex w-full px-4 pt-4 gap-4 items-center">
           <View className="w-full flex gap-4 p-4 rounded-xl bg-card text-card-foreground border border-muted/40">
             <View className="flex flex-row gap-4">
               <View className="flex items-center gap-1">
@@ -99,8 +99,8 @@ function Profile() {
             />
           </View>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 

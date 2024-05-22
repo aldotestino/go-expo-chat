@@ -21,7 +21,7 @@ function InitialLayout() {
     const inTabsGroup = segments[0] === "(auth)";
 
     if (isSignedIn && !inTabsGroup) {
-      router.replace("/chat");
+      router.replace("/chats");
     } else if (!isSignedIn) {
       router.replace("/login");
     }

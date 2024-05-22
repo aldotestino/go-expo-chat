@@ -1,43 +1,26 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Tabs } from "expo-router";
-
-import { useColorScheme } from "@/lib/useColorScheme";
+import { Stack } from "expo-router";
 
 function Layout() {
-  const { colors } = useColorScheme();
-
   return (
-    <Tabs>
-      <Tabs.Screen
-        name="chat"
+    <Stack
+      screenOptions={{
+        headerBackTitleVisible: false,
+      }}
+    >
+      <Stack.Screen
+        name="(tabs)"
         options={{
-          title: "Chat",
-          tabBarIcon: ({ focused, color }) => (
-            <Ionicons
-              name="chatbubbles"
-              size={32}
-              color={focused ? colors.primary : color}
-            />
-          ),
           headerShown: false,
         }}
       />
-      <Tabs.Screen
-        name="settings"
+      <Stack.Screen
+        name="chat/[id]"
         options={{
-          unmountOnBlur: true,
-          title: "Settings",
-          tabBarIcon: ({ focused, color }) => (
-            <Ionicons
-              name="cog"
-              size={32}
-              color={focused ? colors.primary : color}
-            />
-          ),
-          headerShown: false,
+          headerTransparent: true,
+          headerBlurEffect: "regular",
         }}
       />
-    </Tabs>
+    </Stack>
   );
 }
 

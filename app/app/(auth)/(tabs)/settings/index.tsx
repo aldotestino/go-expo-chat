@@ -29,8 +29,8 @@ function Settings() {
   }
 
   return (
-    <SafeAreaView className="flex-1 flex items-center">
-      <ScrollView className="w-full">
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <SafeAreaView>
         <View className="flex w-full px-4 gap-4 pt-4 items-center">
           <Link href="/settings/profile" asChild>
             <Pressable className="w-full">
@@ -70,8 +70,8 @@ function Settings() {
             color={colors.destructive}
           />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
