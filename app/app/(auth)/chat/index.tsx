@@ -1,9 +1,9 @@
 import { FlashList } from "@shopify/flash-list";
 import { cssInterop } from "nativewind";
-import { View } from "react-native";
 
 import ChatPreviewItem from "@/components/ChatPreviewItem";
 import EmptyChat from "@/components/EmptyChat";
+import Separator from "@/components/Separator";
 import { FAKE_CHATS } from "@/lib/constants";
 import { ChatPreview } from "@/lib/types";
 import { useHeaderSearchBar } from "@/lib/useHeaderSearchBar";
@@ -15,10 +15,6 @@ cssInterop(FlashList, {
 
 function keyExtractor(item: ChatPreview) {
   return item.username;
-}
-
-function Separator() {
-  return <View className="border-b border-muted/40 ml-[72px]" />;
 }
 
 const USE_FAKE_DATA = true;
@@ -45,7 +41,7 @@ function Chat() {
       contentContainerClassName="py-4 android:pb-12"
       extraData={searchValue}
       keyExtractor={keyExtractor}
-      ItemSeparatorComponent={Separator}
+      ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
       renderItem={ChatPreviewItem}
       ListEmptyComponent={CHATS.length === 0 ? EmptyChat : undefined}
     />
