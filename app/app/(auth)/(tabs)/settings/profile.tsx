@@ -45,14 +45,19 @@ function Profile() {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+        aspect: [4, 4],
+        quality: 0.1,
         base64: true,
       });
 
       if (!result.canceled && result.assets[0].base64) {
+        const base64 = result.assets[0].base64;
+        const mimeType = result.assets[0].mimeType;
+
+        const image = `data:${mimeType};base64,${base64}`;
+
         await user?.setProfileImage({
-          file: result.assets[0].base64,
+          file: image,
         });
       }
     } catch (err: any) {
