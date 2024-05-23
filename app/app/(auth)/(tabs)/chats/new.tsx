@@ -54,7 +54,7 @@ function NewChatModal() {
       extraData={searchValue}
       keyExtractor={keyExtractor}
       ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
-      renderItem={UserItemList}
+      renderItem={(props) => <UserItemList {...props} />}
       ListEmptyComponent={debouncedSearchValue ? NoUsersFound : undefined}
     />
   );

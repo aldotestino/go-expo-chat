@@ -42,7 +42,7 @@ function ChatList() {
       extraData={searchValue}
       keyExtractor={keyExtractor}
       ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
-      renderItem={ChatItemList}
+      renderItem={(props) => <ChatItemList {...props} />}
       ListEmptyComponent={CHATS.length === 0 ? EmptyChat : undefined}
     />
   );
