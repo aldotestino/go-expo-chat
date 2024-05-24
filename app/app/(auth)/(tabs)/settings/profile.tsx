@@ -1,14 +1,8 @@
 import { useUser } from "@clerk/clerk-expo";
-import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
-import {
-  Pressable,
-  SafeAreaView,
-  View,
-  TextInput,
-  ScrollView,
-} from "react-native";
+import { SafeAreaView, View, TextInput, ScrollView } from "react-native";
 
+import UpdateProfileImage from "@/components/UpdateProfileImage";
 import {
   Avatar,
   AvatarFallback,
@@ -16,7 +10,6 @@ import {
 } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
 import { useHeaderSubmit } from "@/lib/useHeaderSubmit";
-import { cn } from "@/lib/utils";
 
 function Profile() {
   const { user } = useUser();
@@ -40,31 +33,6 @@ function Profile() {
     }
   }
 
-  async function onPickImage() {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 4],
-        quality: 0.1,
-        base64: true,
-      });
-
-      if (!result.canceled && result.assets[0].base64) {
-        const base64 = result.assets[0].base64;
-        const mimeType = result.assets[0].mimeType;
-
-        const image = `data:${mimeType};base64,${base64}`;
-
-        await user?.setProfileImage({
-          file: image,
-        });
-      }
-    } catch (err: any) {
-      alert(err.errors[0].message);
-    }
-  }
-
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
@@ -78,15 +46,7 @@ function Profile() {
                     <Text>{user?.username![0]}</Text>
                   </AvatarFallback>
                 </Avatar>
-                <Pressable onPress={onPickImage}>
-                  {({ pressed }) => (
-                    <Text
-                      className={cn("text-primary", pressed && "opacity-50")}
-                    >
-                      Update
-                    </Text>
-                  )}
-                </Pressable>
+                <UpdateProfileImage />
               </View>
               <Text variant="subhead" className="flex-1">
                 Insert your name and (optional) a profile image

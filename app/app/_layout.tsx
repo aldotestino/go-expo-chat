@@ -2,6 +2,7 @@ import "../global.css";
 import "expo-dev-client";
 
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ThemeProvider as NavThemeProvider } from "@react-navigation/native";
 import { Slot, useRouter, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -60,7 +61,9 @@ function Layout() {
       tokenCache={tokenCache}
     >
       <NavThemeProvider value={NAV_THEME[colorScheme]}>
-        <InitialLayout />
+        <ActionSheetProvider>
+          <InitialLayout />
+        </ActionSheetProvider>
       </NavThemeProvider>
     </ClerkProvider>
   );
