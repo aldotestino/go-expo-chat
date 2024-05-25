@@ -9,7 +9,7 @@ function SettingsLayout() {
           title: "Settings",
           headerLargeTitle: true,
           headerTransparent: true,
-          headerBlurEffect: "regular",
+          headerBlurEffect: "systemMaterial",
         }}
       />
       <Stack.Screen
@@ -17,7 +17,7 @@ function SettingsLayout() {
         options={{
           title: "Profile",
           headerTransparent: true,
-          headerBlurEffect: "regular",
+          headerBlurEffect: "systemMaterial",
         }}
       />
     </Stack>

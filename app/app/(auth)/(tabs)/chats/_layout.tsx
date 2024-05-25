@@ -11,7 +11,7 @@ function ChatsLayout() {
           title: "Chat",
           headerLargeTitle: true,
           headerTransparent: true,
-          headerBlurEffect: "regular",
+          headerBlurEffect: "systemMaterial",
           headerRight: () => <NewChatButton />,
         }}
       />
@@ -22,7 +22,7 @@ function ChatsLayout() {
           animation: "fade_from_bottom", // for android
           title: "New Chat",
           headerTransparent: true,
-          headerBlurEffect: "regular",
+          headerBlurEffect: "systemMaterial",
         }}
       />
     </Stack>

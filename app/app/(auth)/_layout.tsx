@@ -17,7 +17,7 @@ function Layout() {
         name="chat/[id]"
         options={{
           headerTransparent: true,
-          headerBlurEffect: "regular",
+          headerBlurEffect: "systemMaterial",
         }}
       />
     </Stack>

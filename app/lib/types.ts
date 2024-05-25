@@ -4,3 +4,10 @@ export type ChatPreview = {
   imageUrl: string;
   time: Date;
 };
+
+export type Message = {
+  id: number;
+  userId: string;
+  content: string;
+  createdAt: Date;
+};

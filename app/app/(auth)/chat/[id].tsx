@@ -1,14 +1,21 @@
+import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useLayoutEffect } from "react";
-import { SafeAreaView, ScrollView, View } from "react-native";
+import { useLayoutEffect, useRef, useState } from "react";
+import { NativeScrollEvent, NativeSyntheticEvent, View } from "react-native";
 
+import MessageItem from "@/components/MessageItem";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
-import { FAKE_CHATS } from "@/lib/constants";
+import { FAKE_CHATS, FAKE_MESSAGES } from "@/lib/constants";
+import { Message } from "@/lib/types";
+
+function keyExtractor(item: Message) {
+  return item.id.toString();
+}
 
 function Chat() {
   const navigation = useNavigation();
@@ -18,7 +25,7 @@ function Chat() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: ({}) => (
+      headerTitle: () => (
         <View className="flex flex-row gap-4 items-center w-full">
           <Avatar alt={`${chat!.username} profile image`} className="w-8 h-8">
             <AvatarImage source={{ uri: chat!.imageUrl }} />
@@ -34,16 +41,44 @@ function Chat() {
     });
   });
 
+  const listRef = useRef<FlashList<Message>>(null);
+  const [autoScroll, setAutoScroll] = useState(true);
+
+  function handleContentSizeChange() {
+    if (autoScroll) {
+      listRef.current?.scrollToEnd({ animated: false });
+    }
+  }
+
+  function handleScrollBeginDrag() {
+    setAutoScroll(false);
+  }
+
+  function handleScrollEndDrag(event: NativeSyntheticEvent<NativeScrollEvent>) {
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+    const isAtBottom =
+      contentOffset.y + layoutMeasurement.height >= contentSize.height - 20; // Adjust threshold as needed
+
+    if (isAtBottom) {
+      setAutoScroll(true);
+    }
+  }
+
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <SafeAreaView>
-        {Array.from({ length: 100 }).map((_, i) => (
-          <Text key={i} className="p-4">
-            message nr {i} wowo so many
-          </Text>
-        ))}
-      </SafeAreaView>
-    </ScrollView>
+    <FlashList
+      ref={listRef}
+      contentInsetAdjustmentBehavior="automatic"
+      keyboardShouldPersistTaps="handled"
+      data={FAKE_MESSAGES}
+      estimatedItemSize={20}
+      contentContainerClassName="py-4 android:pb-12 px-4"
+      ItemSeparatorComponent={() => <View className="h-4" />}
+      keyExtractor={keyExtractor}
+      renderItem={(props) => <MessageItem {...props} />}
+      onContentSizeChange={handleContentSizeChange}
+      onScrollBeginDrag={handleScrollBeginDrag}
+      onScrollEndDrag={handleScrollEndDrag}
+    />
   );
 }
 
