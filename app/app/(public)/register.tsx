@@ -1,7 +1,12 @@
 import { useSignUp } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
 import { useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  View,
+} from "react-native";
 
 import InputField from "@/components/InputField";
 import SubmitButton from "@/components/SubmitButton";
@@ -56,7 +61,10 @@ function Register() {
 
   return (
     <SafeAreaView className="flex-1 flex items-center justify-center">
-      <View className="flex w-full px-4 gap-6">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex w-full px-4 gap-6"
+      >
         <View className="flex items-center">
           <Text variant="title1" className="font-bold">
             Register
@@ -119,7 +127,7 @@ function Register() {
             </Link>
           </Text>
         )}
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

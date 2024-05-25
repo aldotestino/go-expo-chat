@@ -1,7 +1,12 @@
 import { useSignIn } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
 import { useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  View,
+} from "react-native";
 
 import InputField from "@/components/InputField";
 import SignInWithOAuth from "@/components/SignInWithOAuth";
@@ -35,7 +40,10 @@ function Login() {
 
   return (
     <SafeAreaView className="flex-1 flex items-center justify-center">
-      <View className="flex w-full px-4 gap-6">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex w-full px-4 gap-6"
+      >
         <View className="flex items-center px-12">
           <Text variant="title1" className="font-bold">
             Welcome back
@@ -78,7 +86,7 @@ function Login() {
           </View>
           <SignInWithOAuth />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
