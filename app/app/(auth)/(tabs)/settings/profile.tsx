@@ -65,7 +65,7 @@ function Profile() {
             <TextInput
               onFocus={show}
               ref={inputRef}
-              className="border-y border-muted/40 py-2 h-10C placeholder:text-gray-500 dark:placeholder:text-gray-200 dark:text-white"
+              className="border-y border-muted/40 py-2 h-10 text-card-foreground"
               placeholder="Username"
               autoCapitalize="none"
               autoCorrect={false}
