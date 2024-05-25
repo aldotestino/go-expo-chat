@@ -5,6 +5,8 @@ function Layout() {
     <Stack
       screenOptions={{
         headerBackTitleVisible: false,
+        headerTransparent: true,
+        headerBlurEffect: "systemMaterial",
       }}
     >
       <Stack.Screen
@@ -13,13 +15,7 @@ function Layout() {
           headerShown: false,
         }}
       />
-      <Stack.Screen
-        name="chat/[id]"
-        options={{
-          headerTransparent: true,
-          headerBlurEffect: "systemMaterial",
-        }}
-      />
+      <Stack.Screen name="chat/[id]" />
     </Stack>
   );
 }
