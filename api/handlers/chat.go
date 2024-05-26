@@ -4,6 +4,9 @@ import (
 	"api/stores"
 	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type ChatHandler struct {
@@ -71,9 +74,11 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 	chats := make([]*ChatPreviewWithUser, 0)
 
 	for _, c := range chatsRaw {
-		if c.LastMessage == nil {
-			continue
-		}
+
+		// If there are no messages in the chat, we don't want to show it
+		// if c.LastMessage == nil {
+		// 	continue
+		// }
 
 		var otherUserId string
 		if c.User1Id == me {
@@ -101,7 +106,52 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("GetMessagesFromChat"))
+	me := r.Context().Value("userId").(string)
+
+	chatId := chi.URLParam(r, "chatId")
+
+	chatIdInt, err := strconv.Atoi(chatId)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	chatRaw, err := h.cs.GetChatById(chatIdInt)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	type ChatWithUser struct {
+		ID       int               `json:"id"`
+		User     *stores.User      `json:"user"`
+		Messages []*stores.Message `json:"messages"`
+	}
+
+	var otherUserId string
+	if chatRaw.User1Id == me {
+		otherUserId = chatRaw.User2Id
+	} else {
+		otherUserId = chatRaw.User1Id
+	}
+
+	otherUser, err := h.us.GetUserById(otherUserId)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	chat := &ChatWithUser{
+		ID:       chatRaw.Id,
+		User:     otherUser,
+		Messages: chatRaw.Messages,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(chat)
 }
 
 func (h *ChatHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
