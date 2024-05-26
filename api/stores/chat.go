@@ -70,7 +70,7 @@ func NewInMemoryChatStore() *InMemoryChatStore {
 func (s *InMemoryChatStore) CreateChat(user1Id, user2Id string) (int, error) {
 	for _, c := range s.chats {
 		if (c.User1Id == user1Id && c.User2Id == user2Id) || (c.User2Id == user1Id && c.User1Id == user2Id) {
-			return -1, errors.New("chat already exists")
+			return c.Id, nil
 		}
 	}
 

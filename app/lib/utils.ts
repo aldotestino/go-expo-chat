@@ -45,7 +45,8 @@ function setupDateFormat(date: Date) {
   };
 }
 
-export function formatDate(date: Date): string {
+export function formatDate(isoString: string): string {
+  const date = new Date(isoString);
   const { today, yesterday, time } = setupDateFormat(date);
 
   if (isSameDay(date, today)) {
@@ -67,7 +68,8 @@ export function formatDate(date: Date): string {
   }
 }
 
-export function formatPreviewDate(date: Date): string {
+export function formatPreviewDate(isoString: string): string {
+  const date = new Date(isoString);
   const { today, yesterday, time } = setupDateFormat(date);
 
   if (isSameDay(date, today)) {

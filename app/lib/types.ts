@@ -8,7 +8,13 @@ export type Message = {
   id: number;
   userId: string;
   content: string;
-  createdAt: Date;
+  createdAt: string;
+};
+
+export type Chat = {
+  id: number;
+  user: User;
+  messages: Message[];
 };
 
 export type ChatPreview = {

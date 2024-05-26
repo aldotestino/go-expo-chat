@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-expo";
 import { View } from "react-native";
 
 import { Text } from "@/components/nativewindui/Text";
@@ -5,7 +6,9 @@ import { Message } from "@/lib/types";
 import { cn, formatDate } from "@/lib/utils";
 
 function MessageItem({ item }: { item: Message }) {
-  const isMine = item.userId === "user1";
+  const { user } = useUser();
+
+  const isMine = item.userId === user?.id;
 
   return (
     <View

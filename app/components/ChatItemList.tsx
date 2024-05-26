@@ -9,7 +9,7 @@ import { cn, formatPreviewDate } from "@/lib/utils";
 
 function ChatItemList({ item }: { item: ChatPreview }) {
   return (
-    <Link href={`/chat/${item.user.username}`} asChild>
+    <Link href={`/chat/${item.id}`} asChild>
       <Pressable>
         {({ pressed }) => (
           <View

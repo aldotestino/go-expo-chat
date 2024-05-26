@@ -12,6 +12,7 @@ function Layout() {
       <Stack.Screen
         name="(tabs)"
         options={{
+          title: "Chat",
           headerShown: false,
         }}
       />

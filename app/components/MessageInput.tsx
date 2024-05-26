@@ -7,25 +7,22 @@ import { useColorScheme } from "@/lib/useColorScheme";
 import { cn } from "@/lib/utils";
 
 function MessageInput({
-  chatId,
-  onNewMessageSent,
+  username,
+  onSubmit,
 }: {
-  chatId?: string;
-  onNewMessageSent: (content: string) => void;
+  username?: string;
+  onSubmit: ({ content }: { content: string }) => Promise<void>;
 }) {
   const { colors } = useColorScheme();
   const insets = useSafeAreaInsets();
   const [input, setInput] = useState("");
 
-  function onSubmit() {
+  function handleSubmit() {
     if (input.trim() === "") {
       return;
     }
 
-    // Send the message to the server
-
-    // Simulate a response
-    onNewMessageSent(input);
+    onSubmit({ content: input });
 
     setInput("");
   }
@@ -39,10 +36,10 @@ function MessageInput({
         <TextInput
           value={input}
           onChangeText={setInput}
-          placeholder={`Message ${chatId}`}
+          placeholder={`Message ${username}`}
           className="py-2 px-3 h-10 border border-muted/40 text-card-foreground rounded-lg flex-1 focus:border-primary"
         />
-        <Pressable onPress={onSubmit} disabled={input.trim() === ""}>
+        <Pressable onPress={handleSubmit} disabled={input.trim() === ""}>
           {({ pressed }) => (
             <Ionicons
               name="arrow-forward-circle"

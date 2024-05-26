@@ -1,8 +1,12 @@
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
 import { cssInterop } from "nativewind";
-import { useEffect, useMemo } from "react";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { useMemo } from "react";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 
 import ChatItemList from "@/components/ChatItemList";
 import EmptyChat from "@/components/EmptyChat";
@@ -27,7 +31,7 @@ function ChatList() {
   });
 
   const { getChats } = useApi();
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["chats"],
     queryFn: getChats,
   });
@@ -55,7 +59,13 @@ function ChatList() {
         keyExtractor={keyExtractor}
         ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
         renderItem={(props) => <ChatItemList {...props} />}
-        ListEmptyComponent={data?.length === 0 ? EmptyChat : undefined}
+        ListEmptyComponent={
+          isLoading ? (
+            <ActivityIndicator />
+          ) : data?.length === 0 ? (
+            EmptyChat
+          ) : undefined
+        }
       />
     </KeyboardAvoidingView>
   );
