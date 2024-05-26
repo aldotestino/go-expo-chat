@@ -23,7 +23,24 @@ export function useApi() {
     return data;
   }
 
+  async function createChat({ userId }: { userId: string }) {
+    const { data } = await apiClient.post<{ chatId: number }>(
+      "/chat",
+      {
+        userId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      },
+    );
+
+    return data;
+  }
+
   return {
     searchUser,
+    createChat,
   };
 }

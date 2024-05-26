@@ -1,18 +1,28 @@
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./nativewindui/Avatar";
 
 import { Text } from "@/components/nativewindui/Text";
+import { useApi } from "@/lib/api";
 import { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 function UserItemList({ item }: { item: User }) {
   const router = useRouter();
 
-  function onPress() {
-    router.back();
-    router.push(`/chat/${item.username}`);
+  const { createChat } = useApi();
+  const createChatMutation = useMutation({
+    mutationFn: createChat,
+    onSuccess: ({ chatId }) => {
+      router.back();
+      router.push(`/chat/${chatId}`);
+    },
+  });
+
+  async function onPress() {
+    await createChatMutation.mutateAsync({ userId: item.id });
   }
 
   return (
