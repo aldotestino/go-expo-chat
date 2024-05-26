@@ -8,7 +8,6 @@ import (
 type Message struct {
 	Id        int       `json:"id"`
 	UserId    string    `json:"userId"`
-	ChatId    string    `json:"chatId"`
 	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"createdAt"`
 }
@@ -44,9 +43,16 @@ func NewChat(user1Id, user2Id string) *Chat {
 	}
 }
 
+type ChatPreview struct {
+	Id          int      `json:"id"`
+	User1Id     string   `json:"user1Id"`
+	User2Id     string   `json:"user2Id"`
+	LastMessage *Message `json:"lastMessage"`
+}
+
 type ChatStore interface {
-	CreateChat(user1Id, user2Id string) (*Chat, error)
-	GetChats(userId string) ([]*Chat, error)
+	CreateChat(user1Id, user2Id string) (int, error)
+	GetChats(userId string) ([]*ChatPreview, error)
 	GetChatById(chatId int) (*Chat, error)
 	SendMessage(userId, content string, chatId int) (*Message, error)
 }
@@ -61,24 +67,36 @@ func NewInMemoryChatStore() *InMemoryChatStore {
 	}
 }
 
-func (s *InMemoryChatStore) CreateChat(user1Id, user2Id string) (*Chat, error) {
+func (s *InMemoryChatStore) CreateChat(user1Id, user2Id string) (int, error) {
 	for _, c := range s.chats {
 		if (c.User1Id == user1Id && c.User2Id == user2Id) || (c.User2Id == user1Id && c.User1Id == user2Id) {
-			return nil, errors.New("chat already exists")
+			return -1, errors.New("chat already exists")
 		}
 	}
 
 	newChat := NewChat(user1Id, user2Id)
 	s.chats = append(s.chats, newChat)
-	return newChat, nil
+	return newChat.Id, nil
 }
 
-func (s *InMemoryChatStore) GetChats(userId string) ([]*Chat, error) {
-	userChats := make([]*Chat, 0)
+func (s *InMemoryChatStore) GetChats(userId string) ([]*ChatPreview, error) {
+	userChats := make([]*ChatPreview, 0)
 
 	for _, c := range s.chats {
 		if c.User1Id == userId || c.User2Id == userId {
-			userChats = append(userChats, c)
+
+			var lastMessage *Message = nil
+
+			if len(c.Messages) > 0 {
+				lastMessage = c.Messages[len(c.Messages)-1]
+			}
+
+			userChats = append(userChats, &ChatPreview{
+				Id:          c.Id,
+				User1Id:     c.User1Id,
+				User2Id:     c.User2Id,
+				LastMessage: lastMessage,
+			})
 		}
 	}
 

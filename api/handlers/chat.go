@@ -19,7 +19,7 @@ func NewChatHandler(cs stores.ChatStore, us stores.UserStore) *ChatHandler {
 }
 
 type CreateChatBody struct {
-	User2Id string `json:"user2Id"`
+	UserId string `json:"userId"`
 }
 
 func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
@@ -28,35 +28,76 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&createChatBody)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Invalid request body"))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	_, err = h.us.GetUserById(createChatBody.User2Id)
+	_, err = h.us.GetUserById(createChatBody.UserId)
 
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("user not found"))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	user1Id := r.Context().Value("userId").(string)
-	newChat, error := h.cs.CreateChat(user1Id, createChatBody.User2Id)
+	me := r.Context().Value("userId").(string)
+	newChatId, err := h.cs.CreateChat(me, createChatBody.UserId)
 
-	if error != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(error.Error()))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newChat)
+	json.NewEncoder(w).Encode(map[string]int{"chatId": newChatId})
 }
 
 func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("GetChats"))
+	me := r.Context().Value("userId").(string)
+
+	chatsRaw, err := h.cs.GetChats(me)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	type ChatPreviewWithUser struct {
+		ID          int             `json:"id"`
+		LastMessage *stores.Message `json:"lastMessage"`
+		User        *stores.User    `json:"user"`
+	}
+
+	chats := make([]*ChatPreviewWithUser, 0)
+
+	for _, c := range chatsRaw {
+		if c.LastMessage == nil {
+			continue
+		}
+
+		var otherUserId string
+		if c.User1Id == me {
+			otherUserId = c.User2Id
+		} else {
+			otherUserId = c.User1Id
+		}
+
+		otherUser, err := h.us.GetUserById(otherUserId)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		chats = append(chats, &ChatPreviewWithUser{
+			ID:          c.Id,
+			User:        otherUser,
+			LastMessage: c.LastMessage,
+		})
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(chats)
 }
 
 func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
