@@ -2,7 +2,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-import { Chat, ChatPreview, User } from "./types";
+import { Chat, ChatPreview, Message, User } from "./types";
 
 export const queryClient = new QueryClient();
 
@@ -58,10 +58,33 @@ export function useApi() {
     return data;
   }
 
+  async function sendMessage({
+    content,
+    chatId,
+  }: {
+    content: string;
+    chatId: number;
+  }) {
+    const { data } = await apiClient.post<Message>(
+      `/chat/${chatId}`,
+      {
+        content,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      },
+    );
+
+    return data;
+  }
+
   return {
     searchUser,
     getChats,
     createChat,
     getChatById,
+    sendMessage,
   };
 }

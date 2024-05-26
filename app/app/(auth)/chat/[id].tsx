@@ -1,5 +1,5 @@
 import { FlashList } from "@shopify/flash-list";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useLayoutEffect, useRef } from "react";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
@@ -21,7 +21,7 @@ function ChatPage() {
   const navigation = useNavigation();
   const local = useLocalSearchParams<{ id: string }>();
 
-  const { getChatById } = useApi();
+  const { getChatById, sendMessage } = useApi();
   const { data, isLoading } = useQuery({
     queryKey: ["chat", { chatId: local.id }],
     queryFn: async () => getChatById({ chatId: parseInt(local.id!, 10) }),
@@ -43,9 +43,15 @@ function ChatPage() {
   const insets = useSafeAreaInsets();
   const listRef = useRef<FlashList<Message>>(null);
 
+  const sendMessageMutation = useMutation({
+    mutationFn: sendMessage,
+  });
+
   async function onSubmit({ content }: { content: string }) {
-    await new Promise((resolve) => setTimeout(resolve, 10000));
-    console.log(content);
+    await sendMessageMutation.mutateAsync({
+      chatId: parseInt(local.id!, 10),
+      content,
+    });
   }
 
   return (
