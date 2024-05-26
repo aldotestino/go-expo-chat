@@ -76,9 +76,9 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 	for _, c := range chatsRaw {
 
 		// If there are no messages in the chat, we don't want to show it
-		// if c.LastMessage == nil {
-		// 	continue
-		// }
+		if c.LastMessage == nil {
+			continue
+		}
 
 		var otherUserId string
 		if c.User1Id == me {
@@ -154,6 +154,39 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(chat)
 }
 
+type SendMessageBody struct {
+	Content string `json:"content"`
+}
+
 func (h *ChatHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("SendMessageToChat"))
+	me := r.Context().Value("userId").(string)
+
+	chatId := chi.URLParam(r, "chatId")
+
+	chatIdInt, err := strconv.Atoi(chatId)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var sendMessageBody SendMessageBody
+
+	err = json.NewDecoder(r.Body).Decode(&sendMessageBody)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	sentMessage, err := h.cs.CreateMessage(me, sendMessageBody.Content, chatIdInt)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(sentMessage)
 }

@@ -54,7 +54,7 @@ type ChatStore interface {
 	CreateChat(user1Id, user2Id string) (int, error)
 	GetChats(userId string) ([]*ChatPreview, error)
 	GetChatById(chatId int) (*Chat, error)
-	SendMessage(userId, content string, chatId int) (*Message, error)
+	CreateMessage(userId, content string, chatId int) (*Message, error)
 }
 
 type InMemoryChatStore struct {
@@ -113,8 +113,9 @@ func (s *InMemoryChatStore) GetChatById(chatId int) (*Chat, error) {
 	return nil, errors.New("chat not found")
 }
 
-func (s *InMemoryChatStore) SendMessage(userId, content string, chatId int) (*Message, error) {
+func (s *InMemoryChatStore) CreateMessage(userId, content string, chatId int) (*Message, error) {
 	chat, err := s.GetChatById(chatId)
+
 	if err != nil {
 		return nil, err
 	}
