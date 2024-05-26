@@ -25,7 +25,9 @@ func (h *UserHandler) SearchUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, err := h.us.SearchUsers(query)
+	me := r.Context().Value("userId").(string)
+
+	users, err := h.us.SearchUsers(query, []string{me})
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
