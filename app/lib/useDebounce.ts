@@ -4,6 +4,11 @@ export function useDebounce(value: string, delay: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
+    if (value.trim() === "") {
+      setDebouncedValue("");
+      return;
+    }
+
     const timeout = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);

@@ -4,10 +4,12 @@ import "expo-dev-client";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ThemeProvider as NavThemeProvider } from "@react-navigation/native";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Slot, useRouter, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 
+import { queryClient } from "@/lib/api";
 import { useColorScheme, useInitialAndroidBarSync } from "@/lib/useColorScheme";
 import { NAV_THEME } from "@/theme";
 
@@ -62,7 +64,9 @@ function Layout() {
     >
       <NavThemeProvider value={NAV_THEME[colorScheme]}>
         <ActionSheetProvider>
-          <InitialLayout />
+          <QueryClientProvider client={queryClient}>
+            <InitialLayout />
+          </QueryClientProvider>
         </ActionSheetProvider>
       </NavThemeProvider>
     </ClerkProvider>

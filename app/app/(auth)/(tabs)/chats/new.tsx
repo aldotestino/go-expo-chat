@@ -1,12 +1,17 @@
 import { FlashList } from "@shopify/flash-list";
+import { useQuery } from "@tanstack/react-query";
 import { cssInterop } from "nativewind";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 
 import Separator from "@/components/Separator";
 import UserItemList from "@/components/UserItemList";
 import { Text } from "@/components/nativewindui/Text";
-import { FAKE_CHATS } from "@/lib/constants";
-import { ChatPreview } from "@/lib/types";
+import { useApi } from "@/lib/api";
+import { User } from "@/lib/types";
 import { useDebounce } from "@/lib/useDebounce";
 import { useHeaderSearchBar } from "@/lib/useHeaderSearchBar";
 
@@ -15,12 +20,9 @@ cssInterop(FlashList, {
   contentContainerClassName: "contentContainerStyle",
 });
 
-function keyExtractor(item: ChatPreview) {
-  return item.username;
+function keyExtractor(item: User) {
+  return item.id;
 }
-
-const USE_FAKE_DATA = true;
-const CHATS: ChatPreview[] = USE_FAKE_DATA ? FAKE_CHATS : [];
 
 function NoUsersFound() {
   return (
@@ -39,11 +41,11 @@ function NewChatModal() {
 
   const debouncedSearchValue = useDebounce(searchValue, 500);
 
-  const data = debouncedSearchValue
-    ? CHATS.filter((c) =>
-        c.username.toLowerCase().includes(debouncedSearchValue.toLowerCase()),
-      )
-    : [];
+  const { searchUser } = useApi();
+  const { data, isLoading } = useQuery({
+    queryKey: ["users", { query: debouncedSearchValue }],
+    queryFn: async () => searchUser({ query: debouncedSearchValue }),
+  });
 
   return (
     <KeyboardAvoidingView
@@ -61,7 +63,15 @@ function NewChatModal() {
         keyExtractor={keyExtractor}
         ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
         renderItem={(props) => <UserItemList {...props} />}
-        ListEmptyComponent={debouncedSearchValue ? NoUsersFound : undefined}
+        ListEmptyComponent={
+          debouncedSearchValue ? (
+            isLoading ? (
+              <ActivityIndicator />
+            ) : (
+              NoUsersFound
+            )
+          ) : undefined
+        }
       />
     </KeyboardAvoidingView>
   );

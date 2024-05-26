@@ -16,22 +16,16 @@ func NewUserHandler(us stores.UserStore) *UserHandler {
 	}
 }
 
-type SearchUsersBody struct {
-	Query string `json:"query"`
-}
-
 func (h *UserHandler) SearchUsers(w http.ResponseWriter, r *http.Request) {
 
-	var body SearchUsersBody
+	query := r.URL.Query().Get("query")
 
-	err := json.NewDecoder(r.Body).Decode(&body)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if query == "" {
+		http.Error(w, "Query is empty", http.StatusBadRequest)
 		return
 	}
 
-	users, err := h.us.SearchUsers(body.Query)
+	users, err := h.us.SearchUsers(query)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

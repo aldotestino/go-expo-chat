@@ -4,10 +4,10 @@ import { Pressable, View } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "./nativewindui/Avatar";
 
 import { Text } from "@/components/nativewindui/Text";
-import { ChatPreview } from "@/lib/types";
+import { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-function UserItemList({ item }: { item: ChatPreview }) {
+function UserItemList({ item }: { item: User }) {
   const router = useRouter();
 
   function onPress() {

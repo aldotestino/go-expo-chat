@@ -6,9 +6,15 @@ import (
 	"github.com/clerkinc/clerk-sdk-go/clerk"
 )
 
+type User struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	ImageUrl string `json:"imageUrl"`
+}
+
 type UserStore interface {
-	GetUserById(userId string) (*clerk.User, error)
-	SearchUsers(query string) ([]clerk.User, error)
+	GetUserById(userId string) (*User, error)
+	SearchUsers(query string) ([]*User, error)
 }
 
 type ClerkUserStore struct {
@@ -21,7 +27,7 @@ func NewClerkUserStore(clerkClient clerk.Client) *ClerkUserStore {
 	}
 }
 
-func (s *ClerkUserStore) GetUserById(userId string) (*clerk.User, error) {
+func (s *ClerkUserStore) GetUserById(userId string) (*User, error) {
 
 	user, err := s.clerkClient.Users().Read(userId)
 
@@ -29,10 +35,14 @@ func (s *ClerkUserStore) GetUserById(userId string) (*clerk.User, error) {
 		return nil, err
 	}
 
-	return user, nil
+	return &User{
+		Id:       user.ID,
+		Username: *user.Username,
+		ImageUrl: user.ProfileImageURL,
+	}, nil
 }
 
-func (s *ClerkUserStore) SearchUsers(query string) ([]clerk.User, error) {
+func (s *ClerkUserStore) SearchUsers(query string) ([]*User, error) {
 
 	users, err := s.clerkClient.Users().ListAll(clerk.ListAllUsersParams{})
 
@@ -40,11 +50,15 @@ func (s *ClerkUserStore) SearchUsers(query string) ([]clerk.User, error) {
 		return nil, err
 	}
 
-	foundUsers := make([]clerk.User, 0)
+	foundUsers := make([]*User, 0)
 
 	for _, u := range users {
 		if strings.Contains(*u.Username, query) {
-			foundUsers = append(foundUsers, u)
+			foundUsers = append(foundUsers, &User{
+				Id:       u.ID,
+				Username: *u.Username,
+				ImageUrl: u.ProfileImageURL,
+			})
 		}
 	}
 
