@@ -2,22 +2,14 @@ import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useLayoutEffect, useRef } from "react";
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import ChatHeaderTitle, {
+  LoadingChatHeaderTitle,
+} from "@/components/ChatHeaderTitle";
 import MessageInput from "@/components/MessageInput";
 import MessageItem from "@/components/MessageItem";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/nativewindui/Avatar";
-import { Text } from "@/components/nativewindui/Text";
 import { useApi } from "@/lib/api";
 import { Message } from "@/lib/types";
 
@@ -37,35 +29,14 @@ function ChatPage() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <View className="flex flex-row gap-4 items-center w-full">
-          {!isLoading ? (
-            <>
-              <Avatar
-                alt={`${data?.user.username} profile image`}
-                className="w-8 h-8"
-              >
-                <AvatarImage source={{ uri: data?.user.imageUrl }} />
-                <AvatarFallback>
-                  <Text>{data?.user.username[0]}</Text>
-                </AvatarFallback>
-              </Avatar>
-              <Text
-                variant="title3"
-                numberOfLines={1}
-                className="font-semibold"
-              >
-                {data?.user.username}
-              </Text>
-            </>
-          ) : (
-            <>
-              <ActivityIndicator />
-              <Text>Loading...</Text>
-            </>
-          )}
-        </View>
-      ),
+      headerTitle: !isLoading
+        ? () => (
+            <ChatHeaderTitle
+              username={data!.user.username}
+              imageUrl={data!.user.imageUrl}
+            />
+          )
+        : () => <LoadingChatHeaderTitle />,
     });
   });
 
