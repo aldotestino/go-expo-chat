@@ -1,11 +1,13 @@
 import { FlashList } from "@shopify/flash-list";
+import { useQuery } from "@tanstack/react-query";
 import { cssInterop } from "nativewind";
+import { useEffect, useMemo } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 
 import ChatItemList from "@/components/ChatItemList";
 import EmptyChat from "@/components/EmptyChat";
 import Separator from "@/components/Separator";
-import { FAKE_CHATS } from "@/lib/constants";
+import { useApi } from "@/lib/api";
 import { ChatPreview } from "@/lib/types";
 import { useHeaderSearchBar } from "@/lib/useHeaderSearchBar";
 
@@ -15,11 +17,8 @@ cssInterop(FlashList, {
 });
 
 function keyExtractor(item: ChatPreview) {
-  return item.username;
+  return item.id.toString();
 }
-
-const USE_FAKE_DATA = true;
-const CHATS: ChatPreview[] = USE_FAKE_DATA ? FAKE_CHATS : [];
 
 function ChatList() {
   const searchValue = useHeaderSearchBar({
@@ -27,11 +26,19 @@ function ChatList() {
     placeholder: "Search",
   });
 
-  const data = searchValue
-    ? CHATS.filter((c) =>
-        c.username.toLowerCase().includes(searchValue.toLowerCase()),
-      )
-    : CHATS;
+  const { getChats } = useApi();
+  const { data } = useQuery({
+    queryKey: ["chats"],
+    queryFn: getChats,
+  });
+
+  const filteredData = useMemo(
+    () =>
+      data?.filter((c) =>
+        c.user.username.toLowerCase().includes(searchValue.toLowerCase()),
+      ),
+    [data, searchValue],
+  );
 
   return (
     <KeyboardAvoidingView
@@ -41,14 +48,14 @@ function ChatList() {
       <FlashList
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
-        data={data}
+        data={filteredData}
         estimatedItemSize={20}
         contentContainerClassName="py-4 android:pb-12"
         extraData={searchValue}
         keyExtractor={keyExtractor}
         ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
         renderItem={(props) => <ChatItemList {...props} />}
-        ListEmptyComponent={CHATS.length === 0 ? EmptyChat : undefined}
+        ListEmptyComponent={data?.length === 0 ? EmptyChat : undefined}
       />
     </KeyboardAvoidingView>
   );

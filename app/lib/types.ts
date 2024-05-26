@@ -4,16 +4,15 @@ export type User = {
   imageUrl: string;
 };
 
-export type ChatPreview = {
-  username: string;
-  lastMessage: string;
-  imageUrl: string;
-  time: Date;
-};
-
 export type Message = {
   id: number;
   userId: string;
   content: string;
   createdAt: Date;
+};
+
+export type ChatPreview = {
+  id: number;
+  lastMessage: Message | null;
+  user: User;
 };

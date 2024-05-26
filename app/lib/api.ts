@@ -1,8 +1,8 @@
 import { useAuth } from "@clerk/clerk-expo";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-import { User } from "./types";
+import { ChatPreview, User } from "./types";
 
 export const queryClient = new QueryClient();
 
@@ -16,6 +16,15 @@ export function useApi() {
   async function searchUser({ query }: { query: string }) {
     if (query.trim() === "") return [];
     const { data } = await apiClient.get<User[]>(`/user?query=${query}`, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+      },
+    });
+    return data;
+  }
+
+  async function getChats() {
+    const { data } = await apiClient.get<ChatPreview[]>("/chat", {
       headers: {
         Authorization: `Bearer ${await getToken()}`,
       },
@@ -41,6 +50,7 @@ export function useApi() {
 
   return {
     searchUser,
+    getChats,
     createChat,
   };
 }

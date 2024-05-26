@@ -9,7 +9,7 @@ import { cn, formatPreviewDate } from "@/lib/utils";
 
 function ChatItemList({ item }: { item: ChatPreview }) {
   return (
-    <Link href={`/chat/${item.username}`} asChild>
+    <Link href={`/chat/${item.user.username}`} asChild>
       <Pressable>
         {({ pressed }) => (
           <View
@@ -18,10 +18,10 @@ function ChatItemList({ item }: { item: ChatPreview }) {
               pressed && "bg-muted/40",
             )}
           >
-            <Avatar alt={`${item.username} profile image`}>
-              <AvatarImage source={{ uri: item.imageUrl }} />
+            <Avatar alt={`${item.user.username} profile image`}>
+              <AvatarImage source={{ uri: item.user.imageUrl }} />
               <AvatarFallback>
-                <Text>{item.username[0]}</Text>
+                <Text>{item.user.username[0]}</Text>
               </AvatarFallback>
             </Avatar>
             <View className="flex-1">
@@ -30,15 +30,17 @@ function ChatItemList({ item }: { item: ChatPreview }) {
                 numberOfLines={1}
                 className="font-semibold"
               >
-                {item.username}
+                {item.user.username}
               </Text>
               <Text variant="body" color="tertiary" numberOfLines={1}>
-                {item.lastMessage}
+                {item.lastMessage?.content ?? "No messages yet"}
               </Text>
             </View>
-            <Text className="self-start" variant="subhead" color="tertiary">
-              {formatPreviewDate(item.time)}
-            </Text>
+            {item.lastMessage && (
+              <Text className="self-start" variant="subhead" color="tertiary">
+                {formatPreviewDate(item.lastMessage.createdAt)}
+              </Text>
+            )}
           </View>
         )}
       </Pressable>
