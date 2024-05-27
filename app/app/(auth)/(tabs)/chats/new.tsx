@@ -10,10 +10,10 @@ import {
 import Separator from "@/components/Separator";
 import UserItemList from "@/components/UserItemList";
 import { Text } from "@/components/nativewindui/Text";
-import { useApi } from "@/lib/api";
+import { useApi } from "@/lib/hooks/useApi";
+import { useDebounce } from "@/lib/hooks/useDebounce";
+import { useHeaderSearchBar } from "@/lib/hooks/useHeaderSearchBar";
 import { User } from "@/lib/types";
-import { useDebounce } from "@/lib/useDebounce";
-import { useHeaderSearchBar } from "@/lib/useHeaderSearchBar";
 
 cssInterop(FlashList, {
   className: "style",

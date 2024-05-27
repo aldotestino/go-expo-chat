@@ -12,7 +12,7 @@ import {
   AvatarImage,
 } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
-import { useColorScheme } from "@/lib/useColorScheme";
+import { useColorScheme } from "@/lib/hooks/useColorScheme";
 import { cn } from "@/lib/utils";
 
 function Settings() {

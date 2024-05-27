@@ -2,7 +2,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-import { Chat, ChatPreview, Message, User } from "./types";
+import { Chat, ChatPreview, Message, User } from "../types";
 
 export const queryClient = new QueryClient();
 

@@ -1,6 +1,6 @@
 import { Switch } from "react-native";
 
-import { useColorScheme } from "@/lib/useColorScheme";
+import { useColorScheme } from "@/lib/hooks/useColorScheme";
 
 function ThemeSwitch() {
   const { colorScheme, toggleColorScheme } = useColorScheme();

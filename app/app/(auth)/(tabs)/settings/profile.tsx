@@ -16,7 +16,7 @@ import {
   AvatarImage,
 } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
-import { useHeaderSubmit } from "@/lib/useHeaderSubmit";
+import { useHeaderSubmit } from "@/lib/hooks/useHeaderSubmit";
 
 function Profile() {
   const { user } = useUser();

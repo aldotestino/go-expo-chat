@@ -9,8 +9,11 @@ import { Slot, useRouter, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 
-import { queryClient } from "@/lib/api";
-import { useColorScheme, useInitialAndroidBarSync } from "@/lib/useColorScheme";
+import { queryClient } from "@/lib/hooks/useApi";
+import {
+  useColorScheme,
+  useInitialAndroidBarSync,
+} from "@/lib/hooks/useColorScheme";
 import { NAV_THEME } from "@/theme";
 
 function InitialLayout() {

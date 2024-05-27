@@ -5,7 +5,7 @@ import { Pressable, View } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "./nativewindui/Avatar";
 
 import { Text } from "@/components/nativewindui/Text";
-import { useApi } from "@/lib/api";
+import { useApi } from "@/lib/hooks/useApi";
 import { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 

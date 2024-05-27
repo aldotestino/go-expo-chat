@@ -10,7 +10,7 @@ import ChatHeaderTitle, {
 } from "@/components/ChatHeaderTitle";
 import MessageInput from "@/components/MessageInput";
 import MessageItem from "@/components/MessageItem";
-import { useApi } from "@/lib/api";
+import { useApi } from "@/lib/hooks/useApi";
 import { Message } from "@/lib/types";
 
 function keyExtractor(item: Message) {

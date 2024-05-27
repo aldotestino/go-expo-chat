@@ -11,9 +11,9 @@ import {
 import ChatItemList from "@/components/ChatItemList";
 import EmptyChat from "@/components/EmptyChat";
 import Separator from "@/components/Separator";
-import { useApi } from "@/lib/api";
+import { useApi } from "@/lib/hooks/useApi";
+import { useHeaderSearchBar } from "@/lib/hooks/useHeaderSearchBar";
 import { ChatPreview } from "@/lib/types";
-import { useHeaderSearchBar } from "@/lib/useHeaderSearchBar";
 
 cssInterop(FlashList, {
   className: "style",

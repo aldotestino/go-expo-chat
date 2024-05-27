@@ -5,8 +5,8 @@ import { useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { Text } from "@/components/nativewindui/Text";
-import { useColorScheme } from "@/lib/useColorScheme";
-import { useWarmUpBrowser } from "@/lib/useWarmUpBrowser";
+import { useColorScheme } from "@/lib/hooks/useColorScheme";
+import { useWarmUpBrowser } from "@/lib/hooks/useWarmUpBrowser";
 import { cn } from "@/lib/utils";
 
 WebBrowser.maybeCompleteAuthSession();

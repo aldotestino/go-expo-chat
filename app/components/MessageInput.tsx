@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useColorScheme } from "@/lib/useColorScheme";
+import { useColorScheme } from "@/lib/hooks/useColorScheme";
 import { cn } from "@/lib/utils";
 
 function MessageInput({

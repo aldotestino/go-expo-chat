@@ -2,7 +2,7 @@ import { useNavigation } from "expo-router";
 import React from "react";
 import { Button, TextInput } from "react-native";
 
-import { useColorScheme } from "@/lib/useColorScheme";
+import { useColorScheme } from "@/lib/hooks/useColorScheme";
 
 export function useHeaderSubmit({
   onSubmit,

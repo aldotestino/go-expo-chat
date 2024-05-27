@@ -2,7 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
 import { Pressable, View } from "react-native";
 
-import { useColorScheme } from "@/lib/useColorScheme";
+import { useColorScheme } from "@/lib/hooks/useColorScheme";
 import { cn } from "@/lib/utils";
 
 function NewChatButton() {

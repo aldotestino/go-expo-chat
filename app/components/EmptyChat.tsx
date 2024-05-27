@@ -3,7 +3,7 @@ import { Link } from "expo-router";
 import { View } from "react-native";
 
 import { Text } from "@/components/nativewindui/Text";
-import { useColorScheme } from "@/lib/useColorScheme";
+import { useColorScheme } from "@/lib/hooks/useColorScheme";
 
 function EmptyChat() {
   const { colors } = useColorScheme();
