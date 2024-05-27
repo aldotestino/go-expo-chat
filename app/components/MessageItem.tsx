@@ -13,13 +13,13 @@ function MessageItem({ item }: { item: Message }) {
   return (
     <View
       className={cn(
-        "w-fit flex gap-1 max-w-xs",
-        isMine && "self-end items-end",
+        "flex gap-1 w-fit max-w-xs",
+        isMine ? "self-end items-end" : "self-start items-start",
       )}
     >
       <View
         className={cn(
-          "p-2 bg-card rounded-xl",
+          "p-2 bg-card rounded-xl w-fit max-w-xs",
           isMine ? "bg-primary rounded-xl rounded-br-none" : "rounded-bl-none",
         )}
       >

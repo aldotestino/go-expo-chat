@@ -4,12 +4,7 @@ import NewChatButton from "@/components/NewChatButton";
 
 function ChatsLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerTransparent: true,
-        headerBlurEffect: "systemMaterial",
-      }}
-    >
+    <Stack>
       <Stack.Screen
         name="index"
         options={{

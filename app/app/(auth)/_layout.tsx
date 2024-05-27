@@ -5,8 +5,6 @@ function Layout() {
     <Stack
       screenOptions={{
         headerBackTitleVisible: false,
-        headerTransparent: true,
-        headerBlurEffect: "systemMaterial",
       }}
     >
       <Stack.Screen

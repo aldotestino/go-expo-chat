@@ -2,12 +2,7 @@ import { Stack } from "expo-router";
 
 function SettingsLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerTransparent: true,
-        headerBlurEffect: "systemMaterial",
-      }}
-    >
+    <Stack>
       <Stack.Screen
         name="index"
         options={{

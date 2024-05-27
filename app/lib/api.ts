@@ -7,7 +7,7 @@ import { Chat, ChatPreview, Message, User } from "./types";
 export const queryClient = new QueryClient();
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
+  baseURL: "http://192.168.1.52:8080/api/v1",
 });
 
 export function useApi() {
