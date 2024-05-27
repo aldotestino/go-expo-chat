@@ -2,8 +2,14 @@ import { useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useLayoutEffect, useRef } from "react";
-import { KeyboardAvoidingView, Platform, View } from "react-native";
+import { useLayoutEffect, useRef, useState } from "react";
+import {
+  KeyboardAvoidingView,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Platform,
+  View,
+} from "react-native";
 
 import ChatHeaderTitle, {
   LoadingChatHeaderTitle,
@@ -24,6 +30,7 @@ function ChatPage() {
   const { user } = useUser();
 
   const listRef = useRef<FlashList<Message>>(null);
+  const [autoScroll, setAutoScroll] = useState(true);
 
   const queryKey = ["chat", { chatId: local.id }];
 
@@ -31,6 +38,7 @@ function ChatPage() {
   const { data, isLoading } = useQuery({
     queryKey,
     queryFn: async () => getChatById({ chatId: parseInt(local.id!, 10) }),
+    // refetchInterval: 5000,
   });
 
   useLayoutEffect(() => {
@@ -74,10 +82,7 @@ function ChatPage() {
         queryKey: ["chats"],
       });
 
-      listRef.current?.scrollToItem({
-        animated: true,
-        item: data?.messages[data.messages.length - 1],
-      });
+      setAutoScroll(true);
     },
   });
 
@@ -86,6 +91,28 @@ function ChatPage() {
       chatId: parseInt(local.id!, 10),
       content,
     });
+  }
+
+  function scrollToEnd() {
+    if (autoScroll && listRef.current) {
+      listRef.current.scrollToItem({
+        animated: false,
+        item: data?.messages[data.messages.length - 1],
+      });
+    }
+  }
+
+  function handleOnScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent;
+
+    const isCloseToBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+
+    if (isCloseToBottom) {
+      setAutoScroll(true);
+    } else {
+      setAutoScroll(false);
+    }
   }
 
   return (
@@ -104,6 +131,8 @@ function ChatPage() {
         ItemSeparatorComponent={() => <View className="h-4" />}
         keyExtractor={keyExtractor}
         renderItem={(props) => <MessageItem {...props} />}
+        onContentSizeChange={scrollToEnd}
+        onScroll={handleOnScroll}
       />
       <MessageInput username={data?.user.username} onSubmit={onSubmit} />
     </KeyboardAvoidingView>
