@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import { Chat } from "./types";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -85,4 +87,24 @@ export function formatPreviewDate(isoString: string): string {
 
     return `${day}/${month}/${year}`;
   }
+}
+
+export function optimisticallyUpdateChat(
+  oldChat: Chat,
+  content: string,
+  userId: string,
+): Chat {
+  return {
+    ...oldChat,
+    messages: [
+      ...oldChat.messages,
+      {
+        id: -1 * Math.floor(Math.random() * 100000), // temporary id to avoid collisions
+        content,
+        userId,
+        createdAt: new Date().toISOString(),
+        showTime: true,
+      },
+    ],
+  };
 }

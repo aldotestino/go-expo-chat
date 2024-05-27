@@ -15,6 +15,7 @@ function MessageItem({ item }: { item: Message }) {
       className={cn(
         "flex gap-1 w-fit max-w-xs",
         isMine ? "self-end items-end" : "self-start items-start",
+        !item.showTime && "-mb-2",
       )}
     >
       <View
@@ -27,9 +28,11 @@ function MessageItem({ item }: { item: Message }) {
           {item.content}
         </Text>
       </View>
-      <Text variant="subhead" color="tertiary">
-        {formatDate(item.createdAt)}
-      </Text>
+      {item.showTime && (
+        <Text variant="subhead" color="tertiary">
+          {formatDate(item.createdAt)}
+        </Text>
+      )}
     </View>
   );
 }

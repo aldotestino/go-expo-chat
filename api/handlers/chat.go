@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"api/stores"
+	"api/utils"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -65,13 +66,7 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	type ChatPreviewWithUser struct {
-		ID          int             `json:"id"`
-		LastMessage *stores.Message `json:"lastMessage"`
-		User        *stores.User    `json:"user"`
-	}
-
-	chats := make([]*ChatPreviewWithUser, 0)
+	chats := make([]*utils.ChatPreviewWithUser, 0)
 
 	for _, c := range chatsRaw {
 
@@ -94,7 +89,7 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		chats = append(chats, &ChatPreviewWithUser{
+		chats = append(chats, &utils.ChatPreviewWithUser{
 			ID:          c.Id,
 			User:        otherUser,
 			LastMessage: c.LastMessage,
@@ -124,12 +119,6 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	type ChatWithUser struct {
-		ID       int               `json:"id"`
-		User     *stores.User      `json:"user"`
-		Messages []*stores.Message `json:"messages"`
-	}
-
 	var otherUserId string
 	if chatRaw.User1Id == me {
 		otherUserId = chatRaw.User2Id
@@ -144,10 +133,12 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	chat := &ChatWithUser{
+	messagesWithShowTime := utils.ComputeShowTime(chatRaw.Messages)
+
+	chat := &utils.ChatWithUser{
 		ID:       chatRaw.Id,
 		User:     otherUser,
-		Messages: chatRaw.Messages,
+		Messages: messagesWithShowTime,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

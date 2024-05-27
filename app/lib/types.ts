@@ -9,6 +9,7 @@ export type Message = {
   userId: string;
   content: string;
   createdAt: string;
+  showTime: boolean;
 };
 
 export type Chat = {
