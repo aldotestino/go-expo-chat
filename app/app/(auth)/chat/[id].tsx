@@ -126,7 +126,7 @@ function ChatPage() {
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
         data={data?.messages}
-        estimatedItemSize={20}
+        estimatedItemSize={100}
         contentContainerClassName="py-4 android:pb-12 px-4"
         ItemSeparatorComponent={() => <View className="h-4" />}
         keyExtractor={keyExtractor}

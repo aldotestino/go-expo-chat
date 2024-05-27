@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
 import { Pressable, View } from "react-native";
 
@@ -8,6 +9,8 @@ import { ChatPreview } from "@/lib/types";
 import { cn, formatPreviewDate } from "@/lib/utils";
 
 function ChatItemList({ item }: { item: ChatPreview }) {
+  const { user } = useUser();
+
   return (
     <Link href={`/chat/${item.id}`} asChild>
       <Pressable>
@@ -33,7 +36,9 @@ function ChatItemList({ item }: { item: ChatPreview }) {
                 {item.user.username}
               </Text>
               <Text variant="body" color="tertiary" numberOfLines={1}>
-                {item.lastMessage?.content ?? "No messages yet"}
+                {item.lastMessage.userId === user!.id
+                  ? `You: ${item.lastMessage.content}`
+                  : item.lastMessage.content}
               </Text>
             </View>
             {item.lastMessage && (

@@ -20,6 +20,6 @@ export type Chat = {
 
 export type ChatPreview = {
   id: number;
-  lastMessage: Message | null;
+  lastMessage: Message;
   user: User;
 };
