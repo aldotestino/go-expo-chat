@@ -2,6 +2,7 @@ package stores
 
 import (
 	"errors"
+	"slices"
 	"time"
 )
 
@@ -99,6 +100,10 @@ func (s *InMemoryChatStore) GetChats(userId string) ([]*ChatPreview, error) {
 			})
 		}
 	}
+
+	slices.SortFunc(userChats, func(a, b *ChatPreview) int {
+		return int(b.LastMessage.CreatedAt.UnixMilli() - a.LastMessage.CreatedAt.UnixMilli())
+	})
 
 	return userChats, nil
 }
