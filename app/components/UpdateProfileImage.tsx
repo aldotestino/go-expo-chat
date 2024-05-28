@@ -72,7 +72,12 @@ function UpdateProfileImage() {
   }
 
   return (
-    <Button variant="link" className="w-fit p-0" onPress={onOpenActions}>
+    <Button
+      size="md"
+      variant="link"
+      className="w-fit p-0"
+      onPress={onOpenActions}
+    >
       Update
     </Button>
   );

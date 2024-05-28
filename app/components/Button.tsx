@@ -23,7 +23,7 @@ const buttonTextVariants = {
 
 const buttonSizes = {
   sm: "text-sm",
-  md: "text-md",
+  md: "text-base",
   lg: "text-lg",
   xl: "text-xl",
 };
