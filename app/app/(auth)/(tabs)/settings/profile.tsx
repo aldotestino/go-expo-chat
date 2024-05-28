@@ -1,7 +1,6 @@
 import { useUser } from "@clerk/clerk-expo";
 import { useState } from "react";
 import {
-  SafeAreaView,
   View,
   TextInput,
   ScrollView,
@@ -42,39 +41,37 @@ function Profile() {
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <SafeAreaView>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          className="flex w-full px-4 pt-4 gap-4 items-center"
-        >
-          <View className="w-full flex gap-4 p-4 rounded-xl bg-card text-card-foreground border border-muted/40">
-            <View className="flex flex-row gap-4">
-              <View className="flex items-center gap-1">
-                <Avatar alt="your profile image" className="w-14 h-14">
-                  <AvatarImage source={{ uri: user?.imageUrl }} />
-                  <AvatarFallback>
-                    <Text>{user?.username![0]}</Text>
-                  </AvatarFallback>
-                </Avatar>
-                <UpdateProfileImage />
-              </View>
-              <Text variant="subhead" className="flex-1">
-                Insert your name and (optional) a profile image
-              </Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex w-full px-4 pt-4 gap-4 items-center"
+      >
+        <View className="w-full flex gap-4 p-4 rounded-xl bg-card text-card-foreground border border-muted/40">
+          <View className="flex flex-row gap-4">
+            <View className="flex items-center gap-1">
+              <Avatar alt="your profile image" className="w-14 h-14">
+                <AvatarImage source={{ uri: user?.imageUrl }} />
+                <AvatarFallback>
+                  <Text>{user?.username![0]}</Text>
+                </AvatarFallback>
+              </Avatar>
+              <UpdateProfileImage />
             </View>
-            <TextInput
-              onFocus={show}
-              ref={inputRef}
-              className="border-y border-muted/40 py-2 h-10 text-card-foreground"
-              placeholder="Username"
-              autoCapitalize="none"
-              autoCorrect={false}
-              value={username}
-              onChangeText={setUsername}
-            />
+            <Text variant="subhead" className="flex-1">
+              Insert your name and (optional) a profile image
+            </Text>
           </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+          <TextInput
+            onFocus={show}
+            ref={inputRef}
+            className="border-y border-muted/40 py-2 h-10 text-card-foreground"
+            placeholder="Username"
+            autoCapitalize="none"
+            autoCorrect={false}
+            value={username}
+            onChangeText={setUsername}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 }

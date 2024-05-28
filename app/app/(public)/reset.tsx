@@ -1,11 +1,6 @@
 import { useSignIn } from "@clerk/clerk-expo";
 import { useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, View } from "react-native";
 
 import InputField from "@/components/InputField";
 import SubmitButton from "@/components/SubmitButton";
@@ -56,11 +51,11 @@ function Reset() {
   }
 
   return (
-    <SafeAreaView className="flex-1 flex items-center justify-center">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex w-full px-4 gap-6"
-      >
+    <KeyboardAvoidingView
+      className="flex-1 justify-center"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View className="flex px-4 gap-6">
         <View className="flex items-center">
           <Text variant="title1" className="font-bold">
             Reset Password
@@ -110,8 +105,8 @@ function Reset() {
             </>
           )}
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
