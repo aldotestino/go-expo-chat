@@ -26,7 +26,7 @@ function ChatItemList({ item }: { item: ChatPreview }) {
               {item.user.username}
             </Text>
             <Text variant="body" color="tertiary" numberOfLines={1}>
-              {item.lastMessage.userId === user!.id
+              {item.lastMessage.userId === user?.id
                 ? `You: ${item.lastMessage.content}`
                 : item.lastMessage.content}
             </Text>
