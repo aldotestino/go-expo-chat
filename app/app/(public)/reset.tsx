@@ -2,8 +2,8 @@ import { useSignIn } from "@clerk/clerk-expo";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
 
+import Button from "@/components/Button";
 import InputField from "@/components/InputField";
-import SubmitButton from "@/components/SubmitButton";
 import { Text } from "@/components/nativewindui/Text";
 
 function Reset() {
@@ -75,11 +75,13 @@ function Reset() {
                 value={email}
                 onChangeText={setEmail}
               />
-              <SubmitButton
+              <Button
                 onPress={onRequestReset}
-                title="Reset Password"
                 loading={loading}
-              />
+                disabled={loading}
+              >
+                Reset Password
+              </Button>
             </>
           ) : (
             <>
@@ -97,11 +99,9 @@ function Reset() {
                 value={password}
                 onChangeText={setPassword}
               />
-              <SubmitButton
-                onPress={onReset}
-                title="Set new Password"
-                loading={loading}
-              />
+              <Button onPress={onReset} loading={loading} disabled={loading}>
+                Set new Password
+              </Button>
             </>
           )}
         </View>

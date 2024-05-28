@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColorScheme } from "@/lib/hooks/useColorScheme";
@@ -39,16 +39,14 @@ function MessageInput({
           placeholder={`Message ${username}`}
           className="py-2 px-3 h-10 border border-muted/40 text-card-foreground rounded-lg flex-1 focus:border-primary"
         />
-        <Pressable onPress={handleSubmit} disabled={input.trim() === ""}>
-          {({ pressed }) => (
-            <Ionicons
-              name="arrow-forward-circle"
-              color={colors.primary}
-              size={40}
-              className={cn(pressed || (input.trim() === "" && "opacity-50"))}
-            />
-          )}
-        </Pressable>
+        <TouchableOpacity onPress={handleSubmit} disabled={input.trim() === ""}>
+          <Ionicons
+            name="arrow-forward-circle"
+            color={colors.primary}
+            size={40}
+            className={cn(input.trim() === "" && "opacity-50")}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

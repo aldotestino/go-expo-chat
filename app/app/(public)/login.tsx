@@ -3,9 +3,9 @@ import { Link } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
 
+import Button from "@/components/Button";
 import InputField from "@/components/InputField";
 import SignInWithOAuth from "@/components/SignInWithOAuth";
-import SubmitButton from "@/components/SubmitButton";
 import { Text } from "@/components/nativewindui/Text";
 
 function Login() {
@@ -71,7 +71,9 @@ function Login() {
               Forgot password?
             </Link>
           </InputField>
-          <SubmitButton onPress={onSignIn} title="Sign In" loading={loading} />
+          <Button onPress={onSignIn} loading={loading} disabled={loading}>
+            Sign In
+          </Button>
           <View className="flex flex-row gap-2 items-center w-full">
             <View className="border border-muted/40 flex-1" />
             <Text variant="subhead" color="tertiary" className="text-center">

@@ -1,13 +1,8 @@
 import { useUser } from "@clerk/clerk-expo";
-import {
-  useActionSheet,
-  connectActionSheet,
-} from "@expo/react-native-action-sheet";
+import { useActionSheet } from "@expo/react-native-action-sheet";
 import * as ImagePicker from "expo-image-picker";
-import { Pressable } from "react-native";
 
-import { Text } from "@/components/nativewindui/Text";
-import { cn } from "@/lib/utils";
+import Button from "./Button";
 
 function UpdateProfileImage() {
   const { user } = useUser();
@@ -77,13 +72,9 @@ function UpdateProfileImage() {
   }
 
   return (
-    <Pressable onPress={onOpenActions}>
-      {({ pressed }) => (
-        <Text className={cn("text-primary", pressed && "opacity-50")}>
-          Update
-        </Text>
-      )}
-    </Pressable>
+    <Button variant="link" className="w-fit p-0" onPress={onOpenActions}>
+      Update
+    </Button>
   );
 }
 

@@ -3,8 +3,8 @@ import { Link } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
 
+import Button from "@/components/Button";
 import InputField from "@/components/InputField";
-import SubmitButton from "@/components/SubmitButton";
 import { Text } from "@/components/nativewindui/Text";
 
 function Register() {
@@ -91,11 +91,9 @@ function Register() {
                 onChangeText={setPassword}
                 secureTextEntry
               />
-              <SubmitButton
-                onPress={onSignUp}
-                title="Sign Up"
-                loading={loading}
-              />
+              <Button onPress={onSignUp} loading={loading} disabled={loading}>
+                Sign Up
+              </Button>
             </>
           ) : (
             <>
@@ -106,11 +104,9 @@ function Register() {
                 value={code}
                 onChangeText={setCode}
               />
-              <SubmitButton
-                onPress={onVerify}
-                title="Verify"
-                loading={loading}
-              />
+              <Button onPress={onVerify} loading={loading} disabled={loading}>
+                Verify
+              </Button>
             </>
           )}
         </View>
