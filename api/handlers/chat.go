@@ -36,6 +36,13 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	me := r.Context().Value("userId").(string)
+
+	if me == createChatBody.UserId {
+		lib.SendErrorJson(w, http.StatusBadRequest, "cannot create chat with yourself")
+		return
+	}
+
 	_, err = h.us.GetUserById(createChatBody.UserId)
 
 	if err != nil {
@@ -43,7 +50,6 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	me := r.Context().Value("userId").(string)
 	newChatId, err := h.cs.CreateChat(me, createChatBody.UserId)
 
 	if err != nil {

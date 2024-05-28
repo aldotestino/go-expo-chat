@@ -30,7 +30,7 @@ func (s *PostgresChatStore) CreateChat(user1Id, user2Id string) (uint, error) {
 	var chatId uint
 	query := s.db.Model(&models.Chat{}).
 		Select("id").
-		Where("user1_id = ? AND user2_id = ?", user1Id, user2Id).
+		Where("(user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?)", user1Id, user2Id, user2Id, user1Id).
 		First(&chatId)
 
 	if query.Error != nil && query.Error != gorm.ErrRecordNotFound {
