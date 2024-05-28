@@ -3,6 +3,7 @@ package stores
 import (
 	"api/lib"
 	"api/models"
+	"slices"
 
 	"gorm.io/gorm"
 )
@@ -27,9 +28,12 @@ func NewPostgresChatStore(db *gorm.DB) *PostgresChatStore {
 func (s *PostgresChatStore) CreateChat(user1Id, user2Id string) (uint, error) {
 
 	var chatId uint
-	query := s.db.Select("id").Find(&models.Chat{}).Where("user1_id = ? AND user2_id = ?", user1Id, user2Id).Scan(&chatId)
+	query := s.db.Model(&models.Chat{}).
+		Select("id").
+		Where("user1_id = ? AND user2_id = ?", user1Id, user2Id).
+		First(&chatId)
 
-	if query.Error != nil {
+	if query.Error != nil && query.Error != gorm.ErrRecordNotFound {
 		return 0, query.Error
 	}
 
@@ -38,8 +42,8 @@ func (s *PostgresChatStore) CreateChat(user1Id, user2Id string) (uint, error) {
 	}
 
 	chat := models.Chat{
-		User1Id: user1Id,
-		User2Id: user2Id,
+		User1ID: user1Id,
+		User2ID: user2Id,
 	}
 
 	result := s.db.Create(&chat)
@@ -52,58 +56,76 @@ func (s *PostgresChatStore) CreateChat(user1Id, user2Id string) (uint, error) {
 }
 
 func (s *PostgresChatStore) GetChats(userId string) ([]*lib.ChatPreview, error) {
-	// userChats := make([]*ChatPreview, 0)
+	userChats := make([]*lib.ChatPreview, 0)
 
-	// for _, c := range s.chats {
-	// 	if c.User1Id == userId || c.User2Id == userId {
+	var chats []models.Chat
+	chatQuery := s.db.Model(&models.Chat{}).Where("user1_id = ? OR user2_id = ?", userId, userId).Find(&chats)
 
-	// 		var lastMessage *Message = nil
+	if chatQuery.Error != nil {
+		return nil, chatQuery.Error
+	}
 
-	// 		if len(c.Messages) > 0 {
-	// 			lastMessage = c.Messages[len(c.Messages)-1]
-	// 		}
+	for _, c := range chats {
 
-	// 		userChats = append(userChats, &ChatPreview{
-	// 			Id:          c.Id,
-	// 			User1Id:     c.User1Id,
-	// 			User2Id:     c.User2Id,
-	// 			LastMessage: lastMessage,
-	// 		})
-	// 	}
-	// }
+		var lastMessage models.Message
+		lastMessageQuery := s.db.Model(&models.Message{}).Where("chat_id = ?", c.ID).Last(&lastMessage)
 
-	// slices.SortFunc(userChats, func(a, b *ChatPreview) int {
-	// 	return int(b.LastMessage.CreatedAt.UnixMilli() - a.LastMessage.CreatedAt.UnixMilli())
-	// })
+		if lastMessageQuery.Error != nil {
+			if lastMessageQuery.Error != gorm.ErrRecordNotFound {
+				return nil, lastMessageQuery.Error
+			} else { // if record not found, continue to next chat
+				continue
+			}
+		}
 
-	return nil, nil
+		userChats = append(userChats, &lib.ChatPreview{
+			ID:          c.ID,
+			User1ID:     c.User1ID,
+			User2ID:     c.User2ID,
+			LastMessage: &lastMessage,
+		})
+	}
+
+	slices.SortFunc(userChats, func(a, b *lib.ChatPreview) int {
+		return int(b.LastMessage.CreatedAt.UnixMilli() - a.LastMessage.CreatedAt.UnixMilli())
+	})
+
+	return userChats, nil
 }
 
 func (s *PostgresChatStore) GetChatById(chatId uint) (*models.Chat, error) {
-	// for _, c := range s.chats {
-	// 	if c.Id == chatId {
-	// 		return c, nil
-	// 	}
-	// }
+	var chat models.Chat
 
-	// return nil, errors.New("chat not found")
+	query := s.db.Model(&models.Chat{}).Preload("Messages").Where("id = ?", chatId).First(&chat)
 
-	return nil, nil
+	if query.Error != nil {
+		return nil, query.Error
+	}
+
+	return &chat, nil
 }
 
 func (s *PostgresChatStore) CreateMessage(userId, content string, chatId uint) (*models.Message, error) {
-	// chat, err := s.GetChatById(chatId)
 
-	// if err != nil {
-	// 	return nil, err
-	// }
+	chatQuery := s.db.Model(&models.Chat{}).
+		Where("id = ? AND (user1_id = ? OR user2_id = ?)", chatId, userId, userId).
+		First(&models.Chat{})
 
-	// if chat.User1Id != userId && chat.User2Id != userId {
-	// 	return nil, errors.New("chat not found")
-	// }
+	if chatQuery.Error != nil {
+		return nil, chatQuery.Error
+	}
 
-	// message := NewMessage(userId, content)
-	// chat.Messages = append(chat.Messages, message)
+	message := models.Message{
+		Content: content,
+		ChatID:  chatId,
+		UserID:  userId,
+	}
 
-	return nil, nil
+	result := s.db.Create(&message)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &message, nil
 }

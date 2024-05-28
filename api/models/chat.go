@@ -1,11 +1,9 @@
 package models
 
-import "gorm.io/gorm"
-
 type Chat struct {
-	gorm.Model
-	User1Id string `json:"user1Id" gorm:"uniqueIndex:idx_u1_u2"`
-	User2Id string `json:"user2Id" gorm:"uniqueIndex:idx_u1_u2"`
+	ID      uint   `json:"id" gorm:"primaryKey"`
+	User1ID string `json:"user1Id" gorm:"uniqueIndex:idx_u1_u2"`
+	User2ID string `json:"user2Id" gorm:"uniqueIndex:idx_u1_u2"`
 
 	Messages []Message `json:"messages"`
 }

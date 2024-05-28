@@ -27,7 +27,7 @@ func ComputeShowTime(messages []models.Message) []*MessageWithShowTime {
 		if i == len(messages)-1 {
 			messageWithShowTime = &MessageWithShowTime{
 				ID:        m.ID,
-				UserId:    m.UserId,
+				UserID:    m.UserID,
 				Content:   m.Content,
 				CreatedAt: m.CreatedAt,
 				ShowTime:  true,
@@ -35,11 +35,11 @@ func ComputeShowTime(messages []models.Message) []*MessageWithShowTime {
 		} else {
 			nextMessage := messages[i+1]
 
-			showTime := !isSameTime(m.CreatedAt, nextMessage.CreatedAt) || m.UserId != nextMessage.UserId
+			showTime := !isSameTime(m.CreatedAt, nextMessage.CreatedAt) || m.UserID != nextMessage.UserID
 
 			messageWithShowTime = &MessageWithShowTime{
 				ID:        m.ID,
-				UserId:    m.UserId,
+				UserID:    m.UserID,
 				Content:   m.Content,
 				CreatedAt: m.CreatedAt,
 				ShowTime:  showTime,

@@ -25,7 +25,7 @@ type ChatWithUser struct {
 
 type MessageWithShowTime struct {
 	ID        uint      `json:"id"`
-	UserId    string    `json:"userId"`
+	UserID    string    `json:"userId"`
 	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"createdAt"`
 	ShowTime  bool      `json:"showTime"`
@@ -33,7 +33,7 @@ type MessageWithShowTime struct {
 
 type ChatPreview struct {
 	ID          uint            `json:"id"`
-	User1Id     string          `json:"user1Id"`
-	User2Id     string          `json:"user2Id"`
+	User1ID     string          `json:"user1Id"`
+	User2ID     string          `json:"user2Id"`
 	LastMessage *models.Message `json:"lastMessage"`
 }

@@ -68,16 +68,11 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 
 	for _, c := range chatsRaw {
 
-		// If there are no messages in the chat, we don't want to show it
-		if c.LastMessage == nil {
-			continue
-		}
-
 		var otherUserId string
-		if c.User1Id == me {
-			otherUserId = c.User2Id
+		if c.User1ID == me {
+			otherUserId = c.User2ID
 		} else {
-			otherUserId = c.User1Id
+			otherUserId = c.User1ID
 		}
 
 		otherUser, err := h.us.GetUserById(otherUserId)
@@ -118,10 +113,10 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var otherUserId string
-	if chatRaw.User1Id == me {
-		otherUserId = chatRaw.User2Id
+	if chatRaw.User1ID == me {
+		otherUserId = chatRaw.User2ID
 	} else {
-		otherUserId = chatRaw.User1Id
+		otherUserId = chatRaw.User1ID
 	}
 
 	otherUser, err := h.us.GetUserById(otherUserId)
