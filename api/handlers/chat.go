@@ -1,8 +1,8 @@
 package handlers
 
 import (
+	"api/lib"
 	"api/stores"
-	"api/utils"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -32,14 +32,14 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&createChatBody)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusBadRequest, "invalid request body")
 		return
 	}
 
 	_, err = h.us.GetUserById(createChatBody.UserId)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -47,13 +47,11 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 	newChatId, err := h.cs.CreateChat(me, createChatBody.UserId)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]int{"chatId": newChatId})
+	lib.SendJson(w, http.StatusCreated, map[string]uint{"chatId": newChatId})
 }
 
 func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +64,7 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	chats := make([]*utils.ChatPreviewWithUser, 0)
+	chats := make([]*lib.ChatPreviewWithUser, 0)
 
 	for _, c := range chatsRaw {
 
@@ -89,8 +87,8 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		chats = append(chats, &utils.ChatPreviewWithUser{
-			ID:          c.Id,
+		chats = append(chats, &lib.ChatPreviewWithUser{
+			ID:          c.ID,
 			User:        otherUser,
 			LastMessage: c.LastMessage,
 		})
@@ -112,7 +110,7 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	chatRaw, err := h.cs.GetChatById(chatIdInt)
+	chatRaw, err := h.cs.GetChatById(uint(chatIdInt))
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -133,10 +131,10 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	messagesWithShowTime := utils.ComputeShowTime(chatRaw.Messages)
+	messagesWithShowTime := lib.ComputeShowTime(chatRaw.Messages)
 
-	chat := &utils.ChatWithUser{
-		ID:       chatRaw.Id,
+	chat := &lib.ChatWithUser{
+		ID:       chatRaw.ID,
 		User:     otherUser,
 		Messages: messagesWithShowTime,
 	}
@@ -170,7 +168,7 @@ func (h *ChatHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sentMessage, err := h.cs.CreateMessage(me, sendMessageBody.Content, chatIdInt)
+	sentMessage, err := h.cs.CreateMessage(me, sendMessageBody.Content, uint(chatIdInt))
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

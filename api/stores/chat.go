@@ -1,136 +1,109 @@
 package stores
 
 import (
-	"errors"
-	"slices"
-	"time"
+	"api/lib"
+	"api/models"
+
+	"gorm.io/gorm"
 )
 
-type Message struct {
-	Id        int       `json:"id"`
-	UserId    string    `json:"userId"`
-	Content   string    `json:"content"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
-var currentMessageId = 0
-
-func NewMessage(userId, content string) *Message {
-	currentMessageId++
-	return &Message{
-		Id:        currentMessageId,
-		UserId:    userId,
-		Content:   content,
-		CreatedAt: time.Now(),
-	}
-}
-
-type Chat struct {
-	Id       int        `json:"id"`
-	User1Id  string     `json:"user1Id"`
-	User2Id  string     `json:"user2Id"`
-	Messages []*Message `json:"messages"`
-}
-
-var currentChatId = 0
-
-func NewChat(user1Id, user2Id string) *Chat {
-	currentChatId++
-	return &Chat{
-		Id:       currentChatId,
-		User1Id:  user1Id,
-		User2Id:  user2Id,
-		Messages: make([]*Message, 0),
-	}
-}
-
-type ChatPreview struct {
-	Id          int      `json:"id"`
-	User1Id     string   `json:"user1Id"`
-	User2Id     string   `json:"user2Id"`
-	LastMessage *Message `json:"lastMessage"`
-}
-
 type ChatStore interface {
-	CreateChat(user1Id, user2Id string) (int, error)
-	GetChats(userId string) ([]*ChatPreview, error)
-	GetChatById(chatId int) (*Chat, error)
-	CreateMessage(userId, content string, chatId int) (*Message, error)
+	CreateChat(user1Id, user2Id string) (uint, error)
+	GetChats(userId string) ([]*lib.ChatPreview, error)
+	GetChatById(chatId uint) (*models.Chat, error)
+	CreateMessage(userId, content string, chatId uint) (*models.Message, error)
 }
 
-type InMemoryChatStore struct {
-	chats []*Chat
+type PostgresChatStore struct {
+	db *gorm.DB
 }
 
-func NewInMemoryChatStore() *InMemoryChatStore {
-	return &InMemoryChatStore{
-		chats: make([]*Chat, 0),
+func NewPostgresChatStore(db *gorm.DB) *PostgresChatStore {
+	return &PostgresChatStore{
+		db,
 	}
 }
 
-func (s *InMemoryChatStore) CreateChat(user1Id, user2Id string) (int, error) {
-	for _, c := range s.chats {
-		if (c.User1Id == user1Id && c.User2Id == user2Id) || (c.User2Id == user1Id && c.User1Id == user2Id) {
-			return c.Id, nil
-		}
+func (s *PostgresChatStore) CreateChat(user1Id, user2Id string) (uint, error) {
+
+	var chatId uint
+	query := s.db.Select("id").Find(&models.Chat{}).Where("user1_id = ? AND user2_id = ?", user1Id, user2Id).Scan(&chatId)
+
+	if query.Error != nil {
+		return 0, query.Error
 	}
 
-	newChat := NewChat(user1Id, user2Id)
-	s.chats = append(s.chats, newChat)
-	return newChat.Id, nil
+	if chatId != 0 {
+		return chatId, nil
+	}
+
+	chat := models.Chat{
+		User1Id: user1Id,
+		User2Id: user2Id,
+	}
+
+	result := s.db.Create(&chat)
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return chat.ID, nil
 }
 
-func (s *InMemoryChatStore) GetChats(userId string) ([]*ChatPreview, error) {
-	userChats := make([]*ChatPreview, 0)
+func (s *PostgresChatStore) GetChats(userId string) ([]*lib.ChatPreview, error) {
+	// userChats := make([]*ChatPreview, 0)
 
-	for _, c := range s.chats {
-		if c.User1Id == userId || c.User2Id == userId {
+	// for _, c := range s.chats {
+	// 	if c.User1Id == userId || c.User2Id == userId {
 
-			var lastMessage *Message = nil
+	// 		var lastMessage *Message = nil
 
-			if len(c.Messages) > 0 {
-				lastMessage = c.Messages[len(c.Messages)-1]
-			}
+	// 		if len(c.Messages) > 0 {
+	// 			lastMessage = c.Messages[len(c.Messages)-1]
+	// 		}
 
-			userChats = append(userChats, &ChatPreview{
-				Id:          c.Id,
-				User1Id:     c.User1Id,
-				User2Id:     c.User2Id,
-				LastMessage: lastMessage,
-			})
-		}
-	}
+	// 		userChats = append(userChats, &ChatPreview{
+	// 			Id:          c.Id,
+	// 			User1Id:     c.User1Id,
+	// 			User2Id:     c.User2Id,
+	// 			LastMessage: lastMessage,
+	// 		})
+	// 	}
+	// }
 
-	slices.SortFunc(userChats, func(a, b *ChatPreview) int {
-		return int(b.LastMessage.CreatedAt.UnixMilli() - a.LastMessage.CreatedAt.UnixMilli())
-	})
+	// slices.SortFunc(userChats, func(a, b *ChatPreview) int {
+	// 	return int(b.LastMessage.CreatedAt.UnixMilli() - a.LastMessage.CreatedAt.UnixMilli())
+	// })
 
-	return userChats, nil
+	return nil, nil
 }
 
-func (s *InMemoryChatStore) GetChatById(chatId int) (*Chat, error) {
-	for _, c := range s.chats {
-		if c.Id == chatId {
-			return c, nil
-		}
-	}
+func (s *PostgresChatStore) GetChatById(chatId uint) (*models.Chat, error) {
+	// for _, c := range s.chats {
+	// 	if c.Id == chatId {
+	// 		return c, nil
+	// 	}
+	// }
 
-	return nil, errors.New("chat not found")
+	// return nil, errors.New("chat not found")
+
+	return nil, nil
 }
 
-func (s *InMemoryChatStore) CreateMessage(userId, content string, chatId int) (*Message, error) {
-	chat, err := s.GetChatById(chatId)
+func (s *PostgresChatStore) CreateMessage(userId, content string, chatId uint) (*models.Message, error) {
+	// chat, err := s.GetChatById(chatId)
 
-	if err != nil {
-		return nil, err
-	}
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	if chat.User1Id != userId && chat.User2Id != userId {
-		return nil, errors.New("chat not found")
-	}
+	// if chat.User1Id != userId && chat.User2Id != userId {
+	// 	return nil, errors.New("chat not found")
+	// }
 
-	message := NewMessage(userId, content)
-	chat.Messages = append(chat.Messages, message)
+	// message := NewMessage(userId, content)
+	// chat.Messages = append(chat.Messages, message)
 
-	return message, nil
+	return nil, nil
 }

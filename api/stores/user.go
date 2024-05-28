@@ -1,21 +1,17 @@
 package stores
 
 import (
+	"api/lib"
+	"errors"
 	"slices"
 	"strings"
 
 	"github.com/clerkinc/clerk-sdk-go/clerk"
 )
 
-type User struct {
-	Id       string `json:"id"`
-	Username string `json:"username"`
-	ImageUrl string `json:"imageUrl"`
-}
-
 type UserStore interface {
-	GetUserById(userId string) (*User, error)
-	SearchUsers(query string, ignoreList []string) ([]*User, error)
+	GetUserById(userId string) (*lib.User, error)
+	SearchUsers(query string, ignoreList []string) ([]*lib.User, error)
 }
 
 type ClerkUserStore struct {
@@ -28,22 +24,22 @@ func NewClerkUserStore(clerkClient clerk.Client) *ClerkUserStore {
 	}
 }
 
-func (s *ClerkUserStore) GetUserById(userId string) (*User, error) {
+func (s *ClerkUserStore) GetUserById(userId string) (*lib.User, error) {
 
 	user, err := s.clerkClient.Users().Read(userId)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.New("user not found")
 	}
 
-	return &User{
-		Id:       user.ID,
+	return &lib.User{
+		ID:       user.ID,
 		Username: *user.Username,
 		ImageUrl: user.ProfileImageURL,
 	}, nil
 }
 
-func (s *ClerkUserStore) SearchUsers(query string, ignoreList []string) ([]*User, error) {
+func (s *ClerkUserStore) SearchUsers(query string, ignoreList []string) ([]*lib.User, error) {
 
 	users, err := s.clerkClient.Users().ListAll(clerk.ListAllUsersParams{})
 
@@ -51,12 +47,12 @@ func (s *ClerkUserStore) SearchUsers(query string, ignoreList []string) ([]*User
 		return nil, err
 	}
 
-	foundUsers := make([]*User, 0)
+	foundUsers := make([]*lib.User, 0)
 
 	for _, u := range users {
 		if strings.Contains(*u.Username, query) && !slices.Contains(ignoreList, u.ID) {
-			foundUsers = append(foundUsers, &User{
-				Id:       u.ID,
+			foundUsers = append(foundUsers, &lib.User{
+				ID:       u.ID,
 				Username: *u.Username,
 				ImageUrl: u.ProfileImageURL,
 			})

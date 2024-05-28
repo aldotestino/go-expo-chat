@@ -1,7 +1,9 @@
-package utils
+package lib
 
 import (
-	"api/stores"
+	"api/models"
+	"encoding/json"
+	"net/http"
 	"time"
 )
 
@@ -14,7 +16,7 @@ func isSameTime(date1, date2 time.Time) bool {
 		date1.Minute() == date2.Minute()
 }
 
-func ComputeShowTime(messages []*stores.Message) []*MessageWithShowTime {
+func ComputeShowTime(messages []models.Message) []*MessageWithShowTime {
 
 	messagesWithShowTime := make([]*MessageWithShowTime, 0)
 
@@ -24,7 +26,7 @@ func ComputeShowTime(messages []*stores.Message) []*MessageWithShowTime {
 
 		if i == len(messages)-1 {
 			messageWithShowTime = &MessageWithShowTime{
-				Id:        m.Id,
+				ID:        m.ID,
 				UserId:    m.UserId,
 				Content:   m.Content,
 				CreatedAt: m.CreatedAt,
@@ -36,7 +38,7 @@ func ComputeShowTime(messages []*stores.Message) []*MessageWithShowTime {
 			showTime := !isSameTime(m.CreatedAt, nextMessage.CreatedAt) || m.UserId != nextMessage.UserId
 
 			messageWithShowTime = &MessageWithShowTime{
-				Id:        m.Id,
+				ID:        m.ID,
 				UserId:    m.UserId,
 				Content:   m.Content,
 				CreatedAt: m.CreatedAt,
@@ -49,4 +51,14 @@ func ComputeShowTime(messages []*stores.Message) []*MessageWithShowTime {
 	}
 
 	return messagesWithShowTime
+}
+
+func SendErrorJson(w http.ResponseWriter, statusCode int, message string) {
+	SendJson(w, statusCode, map[string]string{"error": message})
+}
+
+func SendJson(w http.ResponseWriter, statusCode int, data interface{}) {
+	w.WriteHeader(statusCode)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
 }
