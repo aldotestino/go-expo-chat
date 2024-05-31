@@ -33,9 +33,12 @@ func (s *ClerkUserStore) GetUserById(userId string) (*lib.User, error) {
 	}
 
 	return &lib.User{
-		ID:       user.ID,
-		Username: *user.Username,
-		ImageUrl: user.ProfileImageURL,
+		ID:        user.ID,
+		Username:  *user.Username,
+		ImageUrl:  user.ProfileImageURL,
+		Email:     user.EmailAddresses[0].EmailAddress,
+		FirstName: *user.FirstName,
+		LastName:  *user.LastName,
 	}, nil
 }
 
@@ -52,9 +55,12 @@ func (s *ClerkUserStore) SearchUsers(query string, ignoreList []string) ([]*lib.
 	for _, u := range users {
 		if strings.Contains(*u.Username, query) && !slices.Contains(ignoreList, u.ID) {
 			foundUsers = append(foundUsers, &lib.User{
-				ID:       u.ID,
-				Username: *u.Username,
-				ImageUrl: u.ProfileImageURL,
+				ID:        u.ID,
+				Username:  *u.Username,
+				ImageUrl:  u.ProfileImageURL,
+				Email:     u.EmailAddresses[0].EmailAddress,
+				FirstName: *u.FirstName,
+				LastName:  *u.LastName,
 			})
 		}
 	}

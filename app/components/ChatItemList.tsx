@@ -15,7 +15,10 @@ function ChatItemList({ item }: { item: ChatPreview }) {
     <Link href={`/chat/${item.id}`} asChild>
       <TouchableOpacity>
         <View className="px-4 py-2 flex flex-row gap-4 items-center">
-          <Avatar alt={`${item.user.username} profile image`}>
+          <Avatar
+            alt={`${item.user.username} profile image`}
+            className="h-12 w-12"
+          >
             <AvatarImage source={{ uri: item.user.imageUrl }} />
             <AvatarFallback>
               <Text>{item.user.username[0]}</Text>

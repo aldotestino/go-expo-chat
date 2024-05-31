@@ -6,9 +6,12 @@ import (
 )
 
 type User struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-	ImageUrl string `json:"imageUrl"`
+	ID        string `json:"id"`
+	Username  string `json:"username"`
+	ImageUrl  string `json:"imageUrl"`
+	Email     string `json:"email"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
 }
 
 type ChatPreviewWithUser struct {

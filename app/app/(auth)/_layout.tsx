@@ -15,6 +15,12 @@ function Layout() {
         }}
       />
       <Stack.Screen name="chat/[id]" />
+      <Stack.Screen
+        name="chat/info"
+        options={{
+          title: "Chat Info",
+        }}
+      />
     </Stack>
   );
 }

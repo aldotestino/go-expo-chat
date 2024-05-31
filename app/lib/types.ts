@@ -2,6 +2,9 @@ export type User = {
   id: string;
   username: string;
   imageUrl: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
 };
 
 export type Message = {

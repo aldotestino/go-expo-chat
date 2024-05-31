@@ -1,13 +1,14 @@
 import { useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Link, useLocalSearchParams, useNavigation } from "expo-router";
 import { useLayoutEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   NativeScrollEvent,
   NativeSyntheticEvent,
   Platform,
+  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -38,18 +39,35 @@ function ChatPage() {
   const { data, isLoading, refetch } = useQuery({
     queryKey,
     queryFn: async () => getChatById({ chatId: parseInt(local.id!, 10) }),
-    // refetchInterval: 5000,
   });
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      title: data?.user.username,
       headerTitle:
         !isLoading && data
           ? () => (
-              <ChatHeaderTitle
-                username={data.user.username}
-                imageUrl={data.user.imageUrl}
-              />
+              <Link
+                href={{
+                  pathname: "/chat/info",
+                  params: {
+                    chatId: local.id,
+                    username: data.user.username,
+                    imageUrl: data.user.imageUrl,
+                    email: data.user.email,
+                    firstName: data.user.firstName,
+                    lastName: data.user.lastName,
+                  },
+                }}
+                asChild
+              >
+                <TouchableOpacity className="w-full">
+                  <ChatHeaderTitle
+                    username={data.user.username}
+                    imageUrl={data.user.imageUrl}
+                  />
+                </TouchableOpacity>
+              </Link>
             )
           : () => <LoadingChatHeaderTitle />,
     });
