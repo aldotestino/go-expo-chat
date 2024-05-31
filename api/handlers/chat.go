@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"api/lib"
+	"api/middlewares"
 	"api/stores"
 	"encoding/json"
 	"net/http"
@@ -36,7 +37,7 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	me := r.Context().Value("userId").(string)
+	me := r.Context().Value(middlewares.UserIdKey).(string)
 
 	if me == createChatBody.UserId {
 		lib.SendErrorJson(w, http.StatusBadRequest, "cannot create chat with yourself")
@@ -61,12 +62,12 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
-	me := r.Context().Value("userId").(string)
+	me := r.Context().Value(middlewares.UserIdKey).(string)
 
 	chatsRaw, err := h.cs.GetChats(me)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -84,7 +85,7 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 		otherUser, err := h.us.GetUserById(otherUserId)
 
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -95,26 +96,25 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(chats)
+	lib.SendJson(w, http.StatusOK, chats)
 }
 
 func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
-	me := r.Context().Value("userId").(string)
+	me := r.Context().Value(middlewares.UserIdKey).(string)
 
 	chatId := chi.URLParam(r, "chatId")
 
 	chatIdInt, err := strconv.Atoi(chatId)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusBadRequest, "invalid chat id")
 		return
 	}
 
 	chatRaw, err := h.cs.GetChatById(uint(chatIdInt))
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -128,7 +128,7 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 	otherUser, err := h.us.GetUserById(otherUserId)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -140,8 +140,7 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 		Messages: messagesWithShowTime,
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(chat)
+	lib.SendJson(w, http.StatusOK, chat)
 }
 
 type SendMessageBody struct {
@@ -149,14 +148,14 @@ type SendMessageBody struct {
 }
 
 func (h *ChatHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
-	me := r.Context().Value("userId").(string)
+	me := r.Context().Value(middlewares.UserIdKey).(string)
 
 	chatId := chi.URLParam(r, "chatId")
 
 	chatIdInt, err := strconv.Atoi(chatId)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusBadRequest, "invalid chat id")
 		return
 	}
 
@@ -165,18 +164,16 @@ func (h *ChatHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&sendMessageBody)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusBadRequest, "invalid request body")
 		return
 	}
 
 	sentMessage, err := h.cs.CreateMessage(me, sendMessageBody.Content, uint(chatIdInt))
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(sentMessage)
+	lib.SendJson(w, http.StatusCreated, sentMessage)
 }
