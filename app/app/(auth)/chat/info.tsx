@@ -37,19 +37,25 @@ function ChatInfo() {
         </View>
         {(firstName || lastName) && (
           <View className="self-start w-full bg-card p-4 rounded-xl border border-muted/40">
-            <View className="flex-row h-8 items-end gap-4">
-              <Text variant="body" color="tertiary">
-                Firstname:
-              </Text>
-              <Text variant="title3">{firstName}</Text>
-            </View>
-            <View className="w-full border-b py-1 border-muted/40" />
-            <View className="flex-row h-8 items-end gap-4">
-              <Text variant="body" color="tertiary">
-                Lastname:
-              </Text>
-              <Text variant="title3">{lastName}</Text>
-            </View>
+            {firstName && (
+              <View className="flex-row h-8 items-end gap-4">
+                <Text variant="body" color="tertiary">
+                  Firstname:
+                </Text>
+                <Text variant="title3">{firstName}</Text>
+              </View>
+            )}
+            {firstName && lastName && (
+              <View className="w-full border-b py-1 border-muted/40" />
+            )}
+            {lastName && (
+              <View className="flex-row h-8 items-end gap-4">
+                <Text variant="body" color="tertiary">
+                  Lastname:
+                </Text>
+                <Text variant="title3">{lastName}</Text>
+              </View>
+            )}
           </View>
         )}
         {/* <Button variant="destructive" iconLeft="trash">
