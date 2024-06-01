@@ -8,4 +8,5 @@ type Message struct {
 	UserID    string    `json:"userId"`
 	Content   string    `json:"content"`
 	ChatID    uint      `json:"chatId"`
+	GroupID   uint      `json:"groupId"`
 }

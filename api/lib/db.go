@@ -21,6 +21,6 @@ func ConnectDatabase() (*gorm.DB, error) {
 	return gorm.Open(postgres.Open(conn_str), &gorm.Config{})
 }
 
-func MigrateDatabase(db *gorm.DB) {
-	db.AutoMigrate(&models.Chat{}, &models.Message{})
+func MigrateDatabase(db *gorm.DB) error {
+	return db.AutoMigrate(&models.Chat{}, &models.Group{}, &models.GroupParticipant{}, &models.Message{})
 }

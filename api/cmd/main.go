@@ -39,7 +39,11 @@ func init() {
 		log.Fatal("Error connecting to the database")
 	}
 
-	lib.MigrateDatabase(db)
+	err = lib.MigrateDatabase(db)
+
+	if err != nil {
+		log.Fatal("Error migrating the database")
+	}
 }
 
 func main() {

@@ -12,6 +12,7 @@ import (
 type UserStore interface {
 	GetUserById(userId string) (*lib.User, error)
 	SearchUsers(query string, ignoreList []string) ([]*lib.User, error)
+	GetUsersByIds(userIds []string) ([]*lib.User, error)
 }
 
 type ClerkUserStore struct {
@@ -63,6 +64,36 @@ func (s *ClerkUserStore) SearchUsers(query string, ignoreList []string) ([]*lib.
 				LastName:  *u.LastName,
 			})
 		}
+	}
+
+	return foundUsers, nil
+}
+
+func (s *ClerkUserStore) GetUsersByIds(userIds []string) ([]*lib.User, error) {
+
+	users, err := s.clerkClient.Users().ListAll(clerk.ListAllUsersParams{
+		UserIDs: userIds,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(users) != len(userIds) {
+		return nil, errors.New("not all users were found")
+	}
+
+	foundUsers := make([]*lib.User, 0)
+
+	for _, u := range users {
+		foundUsers = append(foundUsers, &lib.User{
+			ID:        u.ID,
+			Username:  *u.Username,
+			ImageUrl:  u.ProfileImageURL,
+			Email:     u.EmailAddresses[0].EmailAddress,
+			FirstName: *u.FirstName,
+			LastName:  *u.LastName,
+		})
 	}
 
 	return foundUsers, nil

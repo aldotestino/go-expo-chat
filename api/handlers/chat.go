@@ -177,3 +177,29 @@ func (h *ChatHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
 
 	lib.SendJson(w, http.StatusCreated, sentMessage)
 }
+
+type CreateGroupBody struct {
+	GroupName string   `json:"groupName"`
+	UserIds   []string `json:"userIds"`
+}
+
+func (h *ChatHandler) CreateGroup(w http.ResponseWriter, r *http.Request) {
+	var createGroupBody CreateGroupBody
+
+	err := json.NewDecoder(r.Body).Decode(&createGroupBody)
+
+	if err != nil {
+		lib.SendErrorJson(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+
+	_, err = h.us.GetUsersByIds(createGroupBody.UserIds)
+
+	if err != nil {
+		lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// TODO: continue
+
+}

@@ -13,6 +13,7 @@ type ChatStore interface {
 	GetChats(userId string) ([]*lib.ChatPreview, error)
 	GetChatById(chatId uint) (*models.Chat, error)
 	CreateMessage(userId, content string, chatId uint) (*models.Message, error)
+	CreateGroup(ownerId, name string, participants []string) (uint, error)
 }
 
 type PostgresChatStore struct {
@@ -128,4 +129,9 @@ func (s *PostgresChatStore) CreateMessage(userId, content string, chatId uint) (
 	}
 
 	return &message, nil
+}
+
+func (s *PostgresChatStore) CreateGroup(ownerId, name string, participants []string) (uint, error) {
+	// TODO: continue
+	return 0, nil
 }
