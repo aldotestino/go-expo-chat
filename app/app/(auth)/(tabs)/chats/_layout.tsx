@@ -18,7 +18,7 @@ function ChatsLayout() {
         options={{
           presentation: "modal",
           animation: "fade_from_bottom", // for android
-          title: "New Chat",
+          headerShown: false,
         }}
       />
     </Stack>

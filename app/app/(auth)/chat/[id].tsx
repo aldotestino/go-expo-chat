@@ -36,7 +36,7 @@ function ChatPage() {
   const queryKey = ["chat", { chatId: local.id }];
 
   const { getChatById, sendMessage } = useApi();
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey,
     queryFn: async () => getChatById({ chatId: parseInt(local.id!, 10) }),
   });
@@ -149,8 +149,6 @@ function ChatPage() {
         ItemSeparatorComponent={() => <View className="h-4" />}
         keyExtractor={keyExtractor}
         renderItem={(props) => <MessageItem {...props} />}
-        onRefresh={refetch}
-        refreshing={isLoading}
         onContentSizeChange={scrollToEnd}
         onScroll={handleOnScroll}
       />

@@ -31,7 +31,7 @@ function ChatList() {
   });
 
   const { getChats } = useApi();
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["chats"],
     queryFn: getChats,
   });
@@ -59,9 +59,13 @@ function ChatList() {
         keyExtractor={keyExtractor}
         ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
         renderItem={(props) => <ChatItemList {...props} />}
-        onRefresh={refetch}
-        refreshing={isLoading}
-        ListEmptyComponent={data?.length === 0 ? EmptyChat : undefined}
+        ListEmptyComponent={
+          isLoading ? (
+            <ActivityIndicator />
+          ) : data?.length === 0 ? (
+            EmptyChat
+          ) : undefined
+        }
       />
     </KeyboardAvoidingView>
   );
