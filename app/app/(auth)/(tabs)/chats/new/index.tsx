@@ -76,7 +76,7 @@ function NewChatModal() {
           contentContainerClassName="py-4 android:pb-12"
           extraData={searchValue}
           keyExtractor={keyExtractor}
-          ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
+          ItemSeparatorComponent={() => <Separator className="ml-[80px]" />}
           renderItem={(props) => <UserItemListWithLink {...props} />}
           ListEmptyComponent={
             debouncedSearchValue ? (

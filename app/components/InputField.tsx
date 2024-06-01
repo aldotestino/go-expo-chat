@@ -1,6 +1,8 @@
 import React from "react";
 import { TextInput, View } from "react-native";
 
+import Input from "./Input";
+
 import { Text } from "@/components/nativewindui/Text";
 
 function InputField({
@@ -18,12 +20,7 @@ function InputField({
         <Text>{label}</Text>
         {children}
       </View>
-      <TextInput
-        {...props}
-        autoCorrect={false}
-        autoCapitalize="none"
-        className="border border-muted/40 bg-card text-card-foreground h-10 px-3 py-2 rounded-lg focus:border-primary"
-      />
+      <Input {...props} />
     </View>
   );
 }

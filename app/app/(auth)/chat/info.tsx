@@ -2,6 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { View, ScrollView } from "react-native";
 
 import Button from "@/components/Button";
+import Separator from "@/components/Separator";
 import {
   Avatar,
   AvatarFallback,
@@ -45,9 +46,7 @@ function ChatInfo() {
                 <Text variant="title3">{firstName}</Text>
               </View>
             )}
-            {firstName && lastName && (
-              <View className="w-full border-b py-1 border-muted/40" />
-            )}
+            {firstName && lastName && <Separator className="py-1" />}
             {lastName && (
               <View className="flex-row h-8 items-end gap-4">
                 <Text variant="body" color="tertiary">

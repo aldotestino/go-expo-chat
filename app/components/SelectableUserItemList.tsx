@@ -1,10 +1,9 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import React, { useState } from "react";
+import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import UserItemList from "./UserItemList";
 
-import { useColorScheme } from "@/lib/hooks/useColorScheme";
 import { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -17,8 +16,6 @@ const SelectableUserItemList = ({
   onSelectUser: (userId: string) => void;
   onRemoveUser: (userId: string) => void;
 }) => {
-  const { colors } = useColorScheme();
-
   function handlePress() {
     if (item.selected) {
       onRemoveUser(item.id);
@@ -37,9 +34,7 @@ const SelectableUserItemList = ({
           item.selected ? "bg-primary" : "bg-transparent",
         )}
       >
-        {item.selected && (
-          <Ionicons name="checkmark" size={20} color={colors.foreground} />
-        )}
+        {item.selected && <Ionicons name="checkmark" size={20} color="#fff" />}
       </TouchableOpacity>
     </View>
   );

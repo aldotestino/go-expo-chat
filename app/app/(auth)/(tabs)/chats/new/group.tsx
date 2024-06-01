@@ -1,17 +1,21 @@
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigation } from "expo-router";
 import { cssInterop } from "nativewind";
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  Button,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  View,
 } from "react-native";
 
+import GroupUserList from "@/components/GroupUserList";
+import Input from "@/components/Input";
 import SelectUserItemList from "@/components/SelectableUserItemList";
 import Separator from "@/components/Separator";
-import UserItemList from "@/components/UserItemList";
 import { Text } from "@/components/nativewindui/Text";
 import { useApi } from "@/lib/hooks/useApi";
 import { useDebounce } from "@/lib/hooks/useDebounce";
@@ -36,7 +40,10 @@ function NoUsersFound() {
 }
 
 function NewChatModal() {
+  const navigation = useNavigation();
+
   const searchValue = useHeaderSearchBar({
+    hideNavigationBar: false,
     autoFocus: true,
     placeholder: "Search by username",
     autoCapitalize: "none",
@@ -51,6 +58,26 @@ function NewChatModal() {
   });
 
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [groupName, setGroupName] = useState("");
+
+  function onPress() {
+    console.log({
+      groupName,
+      selectedUsers: selectedUsers.map((user) => user.id),
+    });
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          title="Create"
+          onPress={onPress}
+          disabled={selectedUsers.length === 0 || !groupName.trim()}
+        />
+      ),
+    });
+  }, [selectedUsers, groupName, navigation]);
 
   const dataWithSelected = useMemo(() => {
     return data?.map((user) => ({
@@ -62,7 +89,6 @@ function NewChatModal() {
   }, [data, selectedUsers]);
 
   function onSelectUser(userId: string) {
-    console.log("select", userId);
     setSelectedUsers((prev) => {
       const user = data?.find((user) => user.id === userId);
       if (!user) {
@@ -73,7 +99,6 @@ function NewChatModal() {
   }
 
   function onRemoveUser(userId: string) {
-    console.log("remove", userId);
     setSelectedUsers((prev) => prev.filter((user) => user.id !== userId));
   }
 
@@ -84,32 +109,48 @@ function NewChatModal() {
       keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
       <SafeAreaView className="flex-1">
-        <FlashList
-          contentInsetAdjustmentBehavior="automatic"
-          keyboardShouldPersistTaps="handled"
-          data={dataWithSelected}
-          estimatedItemSize={20}
-          contentContainerClassName="py-4 android:pb-12"
-          extraData={searchValue}
-          keyExtractor={keyExtractor}
-          ItemSeparatorComponent={() => <Separator className="ml-[72px]" />}
-          renderItem={(props) => (
-            <SelectUserItemList
-              {...props}
-              onSelectUser={onSelectUser}
+        {selectedUsers.length > 0 && (
+          <View className="gap-4 pb-4">
+            <GroupUserList
+              selectedUsers={selectedUsers}
               onRemoveUser={onRemoveUser}
             />
-          )}
-          ListEmptyComponent={
-            debouncedSearchValue ? (
-              isLoading ? (
-                <ActivityIndicator />
-              ) : (
-                NoUsersFound
-              )
-            ) : undefined
-          }
-        />
+            <Input
+              value={groupName}
+              onChangeText={setGroupName}
+              placeholder="Group name"
+              className="mx-4"
+            />
+          </View>
+        )}
+        <View className="flex-1">
+          <FlashList
+            contentInsetAdjustmentBehavior="automatic"
+            keyboardShouldPersistTaps="handled"
+            data={dataWithSelected}
+            estimatedItemSize={20}
+            contentContainerClassName="py-4 android:pb-12"
+            extraData={searchValue}
+            keyExtractor={keyExtractor}
+            ItemSeparatorComponent={() => <Separator className="ml-[80px]" />}
+            renderItem={(props) => (
+              <SelectUserItemList
+                {...props}
+                onSelectUser={onSelectUser}
+                onRemoveUser={onRemoveUser}
+              />
+            )}
+            ListEmptyComponent={
+              debouncedSearchValue ? (
+                isLoading ? (
+                  <ActivityIndicator />
+                ) : (
+                  NoUsersFound
+                )
+              ) : undefined
+            }
+          />
+        </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
