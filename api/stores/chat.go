@@ -13,7 +13,9 @@ type ChatStore interface {
 	GetPersonalChats(userId string) ([]*lib.RawChatPreview, error)
 	GetGroupChats(userId string) ([]*lib.RawChatPreview, error)
 
-	GetChatById(chatId uint) (*models.Chat, error)
+	GetPersonalChatById(chatId uint) (*models.Chat, error)
+	GetGroupChatById(groupId uint) (*models.Group, error)
+
 	CreateMessage(userId, content string, chatId uint) (*models.Message, error)
 	CreateGroup(ownerId, name string, participants []string) (uint, error)
 }
@@ -139,16 +141,31 @@ func (s *PostgresChatStore) GetGroupChats(UserId string) ([]*lib.RawChatPreview,
 	return groupChats, nil
 }
 
-func (s *PostgresChatStore) GetChatById(chatId uint) (*models.Chat, error) {
-	var chat models.Chat
+func (s *PostgresChatStore) GetPersonalChatById(chatId uint) (*models.Chat, error) {
+	var personalChat models.Chat
 
-	query := s.db.Model(&models.Chat{}).Preload("Messages").Where("id = ?", chatId).First(&chat)
+	query := s.db.Model(&models.Chat{}).Preload("Messages").Where("id = ?", chatId).First(&personalChat)
 
 	if query.Error != nil {
 		return nil, query.Error
 	}
 
-	return &chat, nil
+	return &personalChat, nil
+}
+
+func (s *PostgresChatStore) GetGroupChatById(chatId uint) (*models.Group, error) {
+	var groupChat models.Group
+
+	query := s.db.Model(&models.Group{}).
+		Preload("Messages").
+		Preload("Participants").
+		Where("id = ?", chatId).First(&groupChat)
+
+	if query.Error != nil {
+		return nil, query.Error
+	}
+
+	return &groupChat, nil
 }
 
 func (s *PostgresChatStore) CreateMessage(userId, content string, chatId uint) (*models.Message, error) {

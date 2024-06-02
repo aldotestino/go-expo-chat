@@ -125,6 +125,7 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 	me := r.Context().Value(middlewares.UserIdKey).(string)
 
+	chatType := chi.URLParam(r, "chatType")
 	chatId := chi.URLParam(r, "chatId")
 
 	chatIdInt, err := strconv.Atoi(chatId)
@@ -134,36 +135,74 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	chatRaw, err := h.cs.GetChatById(uint(chatIdInt))
+	if chatType == string(lib.PersonalChatType) {
+		chatRaw, err := h.cs.GetPersonalChatById(uint(chatIdInt))
 
-	if err != nil {
-		lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
-		return
-	}
+		if err != nil {
+			lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
+			return
+		}
 
-	var otherUserId string
-	if chatRaw.User1ID == me {
-		otherUserId = chatRaw.User2ID
+		var otherUserId string
+		if chatRaw.User1ID == me {
+			otherUserId = chatRaw.User2ID
+		} else {
+			otherUserId = chatRaw.User1ID
+		}
+
+		otherUser, err := h.us.GetUserById(otherUserId)
+
+		if err != nil {
+			lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		messagesWithShowTime := lib.ComputeShowTime(chatRaw.Messages)
+
+		chat := &lib.Chat{
+			ID:       chatRaw.ID,
+			Type:     string(lib.PersonalChatType),
+			User:     otherUser,
+			Messages: messagesWithShowTime,
+		}
+
+		lib.SendJson(w, http.StatusOK, chat)
+	} else if chatType == string(lib.GroupChatType) {
+		groupRaw, err := h.cs.GetGroupChatById(uint(chatIdInt))
+
+		if err != nil {
+			lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		participants := make([]string, 0)
+		for _, gp := range groupRaw.Participants {
+			if gp.UserID != me {
+				participants = append(participants, gp.UserID)
+			}
+		}
+
+		groupParticipants, err := h.us.GetUsersByIds(participants)
+
+		if err != nil {
+			lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		messagesWithShowTime := lib.ComputeShowTime(groupRaw.Messages)
+
+		chat := &lib.Chat{
+			ID:           groupRaw.ID,
+			Type:         string(lib.GroupChatType),
+			GroupName:    &groupRaw.Name,
+			Participants: groupParticipants,
+			Messages:     messagesWithShowTime,
+		}
+
+		lib.SendJson(w, http.StatusOK, chat)
 	} else {
-		otherUserId = chatRaw.User1ID
+		lib.SendErrorJson(w, http.StatusBadRequest, "invalid chat type")
 	}
-
-	otherUser, err := h.us.GetUserById(otherUserId)
-
-	if err != nil {
-		lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	messagesWithShowTime := lib.ComputeShowTime(chatRaw.Messages)
-
-	chat := &lib.Chat{
-		ID:       chatRaw.ID,
-		User:     otherUser,
-		Messages: messagesWithShowTime,
-	}
-
-	lib.SendJson(w, http.StatusOK, chat)
 }
 
 type SendMessageBody struct {

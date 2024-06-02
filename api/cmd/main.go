@@ -67,8 +67,8 @@ func main() {
 
 	r.Get("/api/v1/chat", chatHandler.GetChats)
 
-	r.Post("/api/v1/chat/{chatId}", chatHandler.SendMessage)
-	r.Get("/api/v1/chat/{chatId}", chatHandler.GetChatById)
+	r.Post("/api/v1/chat/{chatType}/{chatId}", chatHandler.SendMessage)
+	r.Get("/api/v1/chat/{chatType}/{chatId}", chatHandler.GetChatById)
 
 	PORT := os.Getenv("PORT")
 	fmt.Printf("Server is running on port %s\n", PORT)
