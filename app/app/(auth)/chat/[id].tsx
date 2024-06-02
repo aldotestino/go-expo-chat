@@ -90,6 +90,7 @@ function ChatPage() {
   async function onSubmit({ content }: { content: string }) {
     await sendMessageMutation.mutateAsync({
       chatId: parseInt(id!, 10),
+      type: type as ChatType,
       content,
     });
   }

@@ -66,13 +66,15 @@ export function useApi() {
 
   async function sendMessage({
     content,
+    type,
     chatId,
   }: {
     content: string;
+    type: ChatType;
     chatId: number;
   }) {
     const { data } = await apiClient.post<Message>(
-      `/chat/${chatId}`,
+      `/chat/${type}/${chatId}`,
       {
         content,
       },

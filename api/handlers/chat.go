@@ -3,6 +3,7 @@ package handlers
 import (
 	"api/lib"
 	"api/middlewares"
+	"api/models"
 	"api/stores"
 	"encoding/json"
 	"net/http"
@@ -212,6 +213,7 @@ type SendMessageBody struct {
 func (h *ChatHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
 	me := r.Context().Value(middlewares.UserIdKey).(string)
 
+	chatType := chi.URLParam(r, "chatType")
 	chatId := chi.URLParam(r, "chatId")
 
 	chatIdInt, err := strconv.Atoi(chatId)
@@ -230,7 +232,16 @@ func (h *ChatHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sentMessage, err := h.cs.CreateMessage(me, sendMessageBody.Content, uint(chatIdInt))
+	var sentMessage *models.Message
+
+	if chatType == string(lib.PersonalChatType) {
+		sentMessage, err = h.cs.CreatePersonalMessage(me, sendMessageBody.Content, uint(chatIdInt))
+	} else if chatType == string(lib.GroupChatType) {
+		sentMessage, err = h.cs.CreateGroupMessage(me, sendMessageBody.Content, uint(chatIdInt))
+	} else {
+		lib.SendErrorJson(w, http.StatusBadRequest, "invalid chat type")
+		return
+	}
 
 	if err != nil {
 		lib.SendErrorJson(w, http.StatusBadRequest, err.Error())

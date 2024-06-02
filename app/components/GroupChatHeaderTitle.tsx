@@ -38,7 +38,7 @@ function GroupChatHeaderTitle({ chat }: { chat: Chat }) {
             numberOfLines={1}
             className="-mt-1"
           >
-            You, ktm, thjkferdhfjr, thjfgrhtgjvr,{" "}
+            You,{" "}
             {Object.values(chat.participants)
               .map((participant) => participant.username)
               .join(", ")}

@@ -9,6 +9,7 @@ import (
 
 type ChatStore interface {
 	CreateChat(user1Id, user2Id string) (uint, error)
+	CreateGroup(ownerId, name string, participants []string) (uint, error)
 
 	GetPersonalChats(userId string) ([]*lib.RawChatPreview, error)
 	GetGroupChats(userId string) ([]*lib.RawChatPreview, error)
@@ -16,8 +17,8 @@ type ChatStore interface {
 	GetPersonalChatById(chatId uint) (*models.Chat, error)
 	GetGroupChatById(groupId uint) (*models.Group, error)
 
-	CreateMessage(userId, content string, chatId uint) (*models.Message, error)
-	CreateGroup(ownerId, name string, participants []string) (uint, error)
+	CreatePersonalMessage(userId, content string, chatId uint) (*models.Message, error)
+	CreateGroupMessage(userId, content string, groupId uint) (*models.Message, error)
 }
 
 type PostgresChatStore struct {
@@ -168,7 +169,7 @@ func (s *PostgresChatStore) GetGroupChatById(chatId uint) (*models.Group, error)
 	return &groupChat, nil
 }
 
-func (s *PostgresChatStore) CreateMessage(userId, content string, chatId uint) (*models.Message, error) {
+func (s *PostgresChatStore) CreatePersonalMessage(userId, content string, chatId uint) (*models.Message, error) {
 
 	chatQuery := s.db.Model(&models.Chat{}).
 		Where("id = ? AND (user1_id = ? OR user2_id = ?)", chatId, userId, userId).
@@ -228,4 +229,29 @@ func (s *PostgresChatStore) CreateGroup(ownerId, name string, participants []str
 	tx.Commit()
 
 	return newGroup.ID, nil
+}
+
+func (s *PostgresChatStore) CreateGroupMessage(userId, content string, group_id uint) (*models.Message, error) {
+
+	groupQuery := s.db.Model(&models.GroupParticipant{}).
+		Where("group_id = ? AND user_id = ?", group_id, userId).
+		First(&models.GroupParticipant{})
+
+	if groupQuery.Error != nil {
+		return nil, groupQuery.Error
+	}
+
+	message := models.Message{
+		Content: content,
+		GroupID: group_id,
+		UserID:  userId,
+	}
+
+	result := s.db.Create(&message)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &message, nil
 }
