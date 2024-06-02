@@ -105,17 +105,35 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, c := range groupChatsRaw {
-		chats = append(chats, &lib.ChatPreview{
+
+		chatPreview := &lib.ChatPreview{
 			ID:          c.ID,
 			Type:        c.Type,
 			GroupName:   c.GroupName,
 			LastMessage: c.LastMessage,
-		})
+		}
+
+		if c.LastMessage != nil {
+			lastMessageSender, err := h.us.GetUserById(c.LastMessage.UserID)
+			if err != nil {
+				lib.SendErrorJson(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			chatPreview.LastMessageSender = &lastMessageSender.Username
+		}
+
+		chats = append(chats, chatPreview)
 	}
 
 	slices.SortFunc(chats, func(a, b *lib.ChatPreview) int {
+		if a.LastMessage == nil && b.LastMessage == nil {
+			return 0
+		}
 		if a.LastMessage == nil {
 			return 1
+		}
+		if b.LastMessage == nil {
+			return -1
 		}
 		return int(b.LastMessage.CreatedAt.UnixMilli() - a.LastMessage.CreatedAt.UnixMilli())
 	})

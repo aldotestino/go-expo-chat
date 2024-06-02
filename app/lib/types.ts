@@ -32,6 +32,7 @@ export type ChatPreview = {
   id: number;
   type: ChatType;
   groupName?: string;
+  lastMessageSender: string;
   user?: User;
   lastMessage: Message;
 };

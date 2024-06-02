@@ -3,17 +3,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
 
-import { Avatar, AvatarFallback, AvatarImage } from "./nativewindui/Avatar";
+import { Avatar, AvatarImage } from "./nativewindui/Avatar";
 
 import { Text } from "@/components/nativewindui/Text";
-import { useColorScheme } from "@/lib/hooks/useColorScheme";
 import { ChatPreview } from "@/lib/types";
 import { formatPreviewDate } from "@/lib/utils";
 
 function ChatItemList({ item }: { item: ChatPreview }) {
   const { user } = useUser();
-
-  const { colors } = useColorScheme();
 
   return (
     <Link
@@ -45,7 +42,9 @@ function ChatItemList({ item }: { item: ChatPreview }) {
               <Text variant="body" color="tertiary" numberOfLines={1}>
                 {item.lastMessage.userId === user?.id
                   ? `You: ${item.lastMessage.content}`
-                  : item.lastMessage.content}
+                  : item.type === "personal"
+                    ? item.lastMessage.content
+                    : `${item.lastMessageSender}: ${item.lastMessage.content}`}
               </Text>
             )}
           </View>

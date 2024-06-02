@@ -48,9 +48,10 @@ type RawChatPreview struct {
 }
 
 type ChatPreview struct {
-	ID          uint            `json:"id"`
-	Type        string          `json:"type"`
-	GroupName   *string         `json:"groupName"`
-	User        *User           `json:"user"`
-	LastMessage *models.Message `json:"lastMessage"`
+	ID                uint            `json:"id"`
+	Type              string          `json:"type"`
+	GroupName         *string         `json:"groupName"`
+	LastMessageSender *string         `json:"lastMessageSender"`
+	User              *User           `json:"user"`
+	LastMessage       *models.Message `json:"lastMessage"`
 }
