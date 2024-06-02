@@ -12,7 +12,7 @@ import (
 type UserStore interface {
 	GetUserById(userId string) (*lib.User, error)
 	SearchUsers(query string, ignoreList []string) ([]*lib.User, error)
-	GetUsersByIds(userIds []string) ([]*lib.User, error)
+	GetUsersByIds(userIds []string) (map[string]*lib.User, error)
 }
 
 type ClerkUserStore struct {
@@ -69,7 +69,7 @@ func (s *ClerkUserStore) SearchUsers(query string, ignoreList []string) ([]*lib.
 	return foundUsers, nil
 }
 
-func (s *ClerkUserStore) GetUsersByIds(userIds []string) ([]*lib.User, error) {
+func (s *ClerkUserStore) GetUsersByIds(userIds []string) (map[string]*lib.User, error) {
 
 	users, err := s.clerkClient.Users().ListAll(clerk.ListAllUsersParams{
 		UserIDs: userIds,
@@ -83,17 +83,17 @@ func (s *ClerkUserStore) GetUsersByIds(userIds []string) ([]*lib.User, error) {
 		return nil, errors.New("not all users were found")
 	}
 
-	foundUsers := make([]*lib.User, 0)
+	foundUsers := make(map[string]*lib.User, 0)
 
 	for _, u := range users {
-		foundUsers = append(foundUsers, &lib.User{
+		foundUsers[u.ID] = &lib.User{
 			ID:        u.ID,
 			Username:  *u.Username,
 			ImageUrl:  u.ProfileImageURL,
 			Email:     u.EmailAddresses[0].EmailAddress,
 			FirstName: *u.FirstName,
 			LastName:  *u.LastName,
-		})
+		}
 	}
 
 	return foundUsers, nil

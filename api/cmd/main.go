@@ -63,6 +63,8 @@ func main() {
 	r.Get("/api/v1/user", userHandler.SearchUsers)
 
 	r.Post("/api/v1/chat", chatHandler.CreateChat)
+	r.Post("/api/v1/group", chatHandler.CreateGroup)
+
 	r.Get("/api/v1/chat", chatHandler.GetChats)
 
 	r.Post("/api/v1/chat/{chatId}", chatHandler.SendMessage)

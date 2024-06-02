@@ -132,6 +132,38 @@ func (s *PostgresChatStore) CreateMessage(userId, content string, chatId uint) (
 }
 
 func (s *PostgresChatStore) CreateGroup(ownerId, name string, participants []string) (uint, error) {
-	// TODO: continue
-	return 0, nil
+
+	newGroup := &models.Group{
+		Name:    name,
+		OwnerID: ownerId,
+	}
+
+	tx := s.db.Begin()
+
+	result := tx.Create(&newGroup)
+
+	if result.Error != nil {
+		tx.Rollback()
+		return 0, result.Error
+	}
+
+	participants = append(participants, ownerId)
+
+	for _, p := range participants {
+		participant := &models.GroupParticipant{
+			GroupID: newGroup.ID,
+			UserID:  p,
+		}
+
+		result := tx.Create(&participant)
+
+		if result.Error != nil {
+			tx.Rollback()
+			return 0, result.Error
+		}
+	}
+
+	tx.Commit()
+
+	return newGroup.ID, nil
 }

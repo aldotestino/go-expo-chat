@@ -200,6 +200,14 @@ func (h *ChatHandler) CreateGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: continue
+	me := r.Context().Value(middlewares.UserIdKey).(string)
 
+	groupId, err := h.cs.CreateGroup(me, createGroupBody.GroupName, createGroupBody.UserIds)
+
+	if err != nil {
+		lib.SendErrorJson(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	lib.SendJson(w, http.StatusCreated, map[string]uint{"groupId": groupId})
 }
