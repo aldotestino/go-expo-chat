@@ -3,14 +3,16 @@ package stores
 import (
 	"api/lib"
 	"api/models"
-	"slices"
 
 	"gorm.io/gorm"
 )
 
 type ChatStore interface {
 	CreateChat(user1Id, user2Id string) (uint, error)
-	GetChats(userId string) ([]*lib.ChatPreview, error)
+
+	GetPersonalChats(userId string) ([]*lib.RawChatPreview, error)
+	GetGroupChats(userId string) ([]*lib.RawChatPreview, error)
+
 	GetChatById(chatId uint) (*models.Chat, error)
 	CreateMessage(userId, content string, chatId uint) (*models.Message, error)
 	CreateGroup(ownerId, name string, participants []string) (uint, error)
@@ -56,8 +58,8 @@ func (s *PostgresChatStore) CreateChat(user1Id, user2Id string) (uint, error) {
 	return chat.ID, nil
 }
 
-func (s *PostgresChatStore) GetChats(userId string) ([]*lib.ChatPreview, error) {
-	userChats := make([]*lib.ChatPreview, 0)
+func (s *PostgresChatStore) GetPersonalChats(userId string) ([]*lib.RawChatPreview, error) {
+	personalChats := make([]*lib.RawChatPreview, 0)
 
 	var chats []models.Chat
 	chatQuery := s.db.Model(&models.Chat{}).Where("user1_id = ? OR user2_id = ?", userId, userId).Find(&chats)
@@ -79,19 +81,62 @@ func (s *PostgresChatStore) GetChats(userId string) ([]*lib.ChatPreview, error) 
 			}
 		}
 
-		userChats = append(userChats, &lib.ChatPreview{
+		personalChats = append(personalChats, &lib.RawChatPreview{
 			ID:          c.ID,
-			User1ID:     c.User1ID,
-			User2ID:     c.User2ID,
+			Type:        string(lib.PersonalChatType),
+			User1ID:     &c.User1ID,
+			User2ID:     &c.User2ID,
 			LastMessage: &lastMessage,
 		})
 	}
 
-	slices.SortFunc(userChats, func(a, b *lib.ChatPreview) int {
-		return int(b.LastMessage.CreatedAt.UnixMilli() - a.LastMessage.CreatedAt.UnixMilli())
-	})
+	return personalChats, nil
+}
 
-	return userChats, nil
+func (s *PostgresChatStore) GetGroupChats(UserId string) ([]*lib.RawChatPreview, error) {
+	groupChats := make([]*lib.RawChatPreview, 0)
+
+	var groupParticipants []models.GroupParticipant
+	groupParticipantQuery := s.db.Model(&models.GroupParticipant{}).Where("user_id = ?", UserId).Find(&groupParticipants)
+
+	if groupParticipantQuery.Error != nil {
+		return nil, groupParticipantQuery.Error
+	}
+
+	for _, gp := range groupParticipants {
+
+		var group models.Group
+		groupQuery := s.db.Model(&models.Group{}).Where("id = ?", gp.GroupID).First(&group)
+
+		if groupQuery.Error != nil {
+			return nil, groupQuery.Error
+		}
+
+		var lastMessage models.Message
+		lastMessageQuery := s.db.Model(&models.Message{}).Where("chat_id = ?", group.ID).Last(&lastMessage)
+
+		if lastMessageQuery.Error != nil {
+			if lastMessageQuery.Error != gorm.ErrRecordNotFound {
+				return nil, lastMessageQuery.Error
+			} else {
+				groupChats = append(groupChats, &lib.RawChatPreview{
+					ID:          group.ID,
+					Type:        string(lib.GroupChatType),
+					GroupName:   &group.Name,
+					LastMessage: nil,
+				})
+			}
+		} else {
+			groupChats = append(groupChats, &lib.RawChatPreview{
+				ID:          group.ID,
+				Type:        string(lib.GroupChatType),
+				GroupName:   &group.Name,
+				LastMessage: &lastMessage,
+			})
+		}
+	}
+
+	return groupChats, nil
 }
 
 func (s *PostgresChatStore) GetChatById(chatId uint) (*models.Chat, error) {

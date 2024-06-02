@@ -6,6 +6,7 @@ import (
 	"api/stores"
 	"encoding/json"
 	"net/http"
+	"slices"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -64,22 +65,27 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 	me := r.Context().Value(middlewares.UserIdKey).(string)
 
-	chatsRaw, err := h.cs.GetChats(me)
-
+	personalChatsRaw, err := h.cs.GetPersonalChats(me)
 	if err != nil {
 		lib.SendErrorJson(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	chats := make([]*lib.ChatPreviewWithUser, 0)
+	groupChatsRaw, err := h.cs.GetGroupChats(me)
+	if err != nil {
+		lib.SendErrorJson(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
-	for _, c := range chatsRaw {
+	chats := make([]*lib.ChatPreview, 0)
+
+	for _, c := range personalChatsRaw {
 
 		var otherUserId string
-		if c.User1ID == me {
-			otherUserId = c.User2ID
+		if *c.User1ID == me {
+			otherUserId = *c.User2ID
 		} else {
-			otherUserId = c.User1ID
+			otherUserId = *c.User1ID
 		}
 
 		otherUser, err := h.us.GetUserById(otherUserId)
@@ -89,12 +95,29 @@ func (h *ChatHandler) GetChats(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		chats = append(chats, &lib.ChatPreviewWithUser{
+		chats = append(chats, &lib.ChatPreview{
 			ID:          c.ID,
+			Type:        c.Type,
 			User:        otherUser,
 			LastMessage: c.LastMessage,
 		})
 	}
+
+	for _, c := range groupChatsRaw {
+		chats = append(chats, &lib.ChatPreview{
+			ID:          c.ID,
+			Type:        c.Type,
+			GroupName:   c.GroupName,
+			LastMessage: c.LastMessage,
+		})
+	}
+
+	slices.SortFunc(chats, func(a, b *lib.ChatPreview) int {
+		if a.LastMessage == nil {
+			return 1
+		}
+		return int(b.LastMessage.CreatedAt.UnixMilli() - a.LastMessage.CreatedAt.UnixMilli())
+	})
 
 	lib.SendJson(w, http.StatusOK, chats)
 }
@@ -134,7 +157,7 @@ func (h *ChatHandler) GetChatById(w http.ResponseWriter, r *http.Request) {
 
 	messagesWithShowTime := lib.ComputeShowTime(chatRaw.Messages)
 
-	chat := &lib.ChatWithUser{
+	chat := &lib.Chat{
 		ID:       chatRaw.ID,
 		User:     otherUser,
 		Messages: messagesWithShowTime,
