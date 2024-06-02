@@ -1,22 +1,21 @@
 import { useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Link, useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useLayoutEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   NativeScrollEvent,
   NativeSyntheticEvent,
   Platform,
-  TouchableOpacity,
   View,
 } from "react-native";
 
-import ChatHeaderTitle, {
-  LoadingChatHeaderTitle,
-} from "@/components/ChatHeaderTitle";
+import GroupChatHeaderTitle from "@/components/GroupChatHeaderTitle";
+import LoadingChatHeaderTitle from "@/components/LoadingChatHeaderTitile";
 import MessageInput from "@/components/MessageInput";
 import MessageItem from "@/components/MessageItem";
+import PersonalChatHeaderTitle from "@/components/PersonalChatHeaderTitle";
 import { queryClient, useApi } from "@/lib/hooks/useApi";
 import { Chat, ChatType, Message } from "@/lib/types";
 import { optimisticallyUpdateChat } from "@/lib/utils";
@@ -30,8 +29,6 @@ function ChatPage() {
   const { id, type } = useLocalSearchParams<{ id: string; type: ChatType }>();
   const { user } = useUser();
 
-  console.log("ChatPage", id, type);
-
   const listRef = useRef<FlashList<Message>>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
@@ -40,38 +37,22 @@ function ChatPage() {
   const { getChatById, sendMessage } = useApi();
   const { data, isLoading } = useQuery({
     queryKey,
-    queryFn: async () => getChatById({ chatId: parseInt(id!, 10) }),
+    queryFn: async () =>
+      getChatById({ type: type as ChatType, chatId: parseInt(id!, 10) }),
   });
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: data?.user.username,
-      headerTitle:
-        !isLoading && data
-          ? () => (
-              <Link
-                href={{
-                  pathname: "/chat/info",
-                  params: {
-                    chatId: id,
-                    username: data.user.username,
-                    imageUrl: data.user.imageUrl,
-                    email: data.user.email,
-                    firstName: data.user.firstName,
-                    lastName: data.user.lastName,
-                  },
-                }}
-                asChild
-              >
-                <TouchableOpacity className="w-full">
-                  <ChatHeaderTitle
-                    username={data.user.username}
-                    imageUrl={data.user.imageUrl}
-                  />
-                </TouchableOpacity>
-              </Link>
-            )
-          : () => <LoadingChatHeaderTitle />,
+      title: data?.user?.username || data?.groupName,
+      headerTitle: isLoading ? (
+        <LoadingChatHeaderTitle />
+      ) : data ? (
+        data.type === "personal" ? (
+          () => <PersonalChatHeaderTitle chat={data} />
+        ) : (
+          () => <GroupChatHeaderTitle chat={data} />
+        )
+      ) : undefined,
     });
   }, [data, isLoading, navigation]);
 
@@ -154,7 +135,10 @@ function ChatPage() {
         onContentSizeChange={scrollToEnd}
         onScroll={handleOnScroll}
       />
-      <MessageInput username={data?.user.username} onSubmit={onSubmit} />
+      <MessageInput
+        username={data?.user?.username || data?.groupName}
+        onSubmit={onSubmit}
+      />
     </KeyboardAvoidingView>
   );
 }

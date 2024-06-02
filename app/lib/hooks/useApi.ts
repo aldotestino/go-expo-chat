@@ -2,7 +2,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-import { Chat, ChatPreview, Message, User } from "../types";
+import { Chat, ChatPreview, ChatType, Message, User } from "../types";
 
 export const queryClient = new QueryClient();
 
@@ -48,8 +48,14 @@ export function useApi() {
     return data;
   }
 
-  async function getChatById({ chatId }: { chatId: number }) {
-    const { data } = await apiClient.get<Chat>(`/chat/${chatId}`, {
+  async function getChatById({
+    type,
+    chatId,
+  }: {
+    type: ChatType;
+    chatId: number;
+  }) {
+    const { data } = await apiClient.get<Chat>(`/chat/${type}/${chatId}`, {
       headers: {
         Authorization: `Bearer ${await getToken()}`,
       },
