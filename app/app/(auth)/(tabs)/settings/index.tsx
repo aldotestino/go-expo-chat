@@ -8,6 +8,7 @@ import Button from "@/components/Button";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { Avatar, AvatarImage } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
+import { queryClient } from "@/lib/hooks/useApi";
 import { useColorScheme } from "@/lib/hooks/useColorScheme";
 
 function Settings() {
@@ -19,6 +20,7 @@ function Settings() {
 
   async function onSignOut() {
     setSignOutLoading(true);
+    queryClient.clear();
     await signOut();
     setSignOutLoading(false);
   }

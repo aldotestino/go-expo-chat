@@ -18,7 +18,14 @@ const Chip = ({
         selected && "bg-primary border-transparent",
       )}
     >
-      <Text className="font-semibold">{props.children}</Text>
+      <Text
+        className={cn(
+          "font-semibold text-card-foreground",
+          selected && "text-primary-foreground",
+        )}
+      >
+        {props.children}
+      </Text>
     </TouchableOpacity>
   );
 };

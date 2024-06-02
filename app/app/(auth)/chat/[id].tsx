@@ -132,7 +132,13 @@ function ChatPage() {
         contentContainerClassName="py-4 android:pb-12 px-4"
         ItemSeparatorComponent={() => <View className="h-4" />}
         keyExtractor={keyExtractor}
-        renderItem={(props) => <MessageItem {...props} />}
+        renderItem={(props) => (
+          <MessageItem
+            {...props}
+            chatType={data?.type}
+            participants={data?.participants}
+          />
+        )}
         onContentSizeChange={scrollToEnd}
         onScroll={handleOnScroll}
       />

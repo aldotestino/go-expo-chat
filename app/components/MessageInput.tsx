@@ -30,7 +30,7 @@ function MessageInput({
   return (
     <View className="bg-card">
       <View
-        className="px-4 py-2 flex flex-row items-center gap-4"
+        className="px-4 py-2 flex flex-row items-center gap-2"
         style={{ marginBottom: insets.bottom }}
       >
         <TextInput
