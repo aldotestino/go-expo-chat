@@ -1,7 +1,7 @@
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 
-import { Avatar, AvatarFallback, AvatarImage } from "./nativewindui/Avatar";
+import { Avatar, AvatarImage } from "./nativewindui/Avatar";
 import { Text } from "./nativewindui/Text";
 
 function ChatHeaderTitle({
@@ -15,9 +15,6 @@ function ChatHeaderTitle({
     <View className="flex flex-row gap-4 items-center w-full">
       <Avatar alt={`${username} profile image`} className="w-8 h-8">
         <AvatarImage source={{ uri: imageUrl }} />
-        <AvatarFallback>
-          <Text>{username[0]}</Text>
-        </AvatarFallback>
       </Avatar>
       <Text variant="title3" numberOfLines={1} className="font-semibold">
         {username}

@@ -38,8 +38,10 @@ function ChatList() {
 
   const filteredData = useMemo(
     () =>
-      data?.filter((c) =>
-        c.user.username.toLowerCase().includes(searchValue.toLowerCase()),
+      data?.filter(
+        (c) =>
+          c.user?.username.toLowerCase().includes(searchValue.toLowerCase()) ||
+          c.groupName?.toLowerCase().includes(searchValue.toLowerCase()),
       ),
     [data, searchValue],
   );

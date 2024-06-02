@@ -1,19 +1,15 @@
 import { useUser } from "@clerk/clerk-expo";
 import { useState } from "react";
 import {
-  View,
-  TextInput,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  TextInput,
+  View,
 } from "react-native";
 
 import UpdateProfileImage from "@/components/UpdateProfileImage";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/nativewindui/Avatar";
+import { Avatar, AvatarImage } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
 import { useHeaderSubmit } from "@/lib/hooks/useHeaderSubmit";
 
@@ -50,9 +46,6 @@ function Profile() {
             <View className="flex items-center gap-1">
               <Avatar alt="your profile image" className="w-14 h-14">
                 <AvatarImage source={{ uri: user?.imageUrl }} />
-                <AvatarFallback>
-                  <Text>{user?.username![0]}</Text>
-                </AvatarFallback>
               </Avatar>
               <UpdateProfileImage />
             </View>

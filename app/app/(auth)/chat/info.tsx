@@ -1,13 +1,8 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 
-import Button from "@/components/Button";
 import Separator from "@/components/Separator";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/nativewindui/Avatar";
+import { Avatar, AvatarImage } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
 
 function ChatInfo() {
@@ -26,9 +21,6 @@ function ChatInfo() {
       <View className="items-center pt-10 px-4 gap-4">
         <Avatar alt={`${username} profile image`} className="w-24 h-24">
           <AvatarImage source={{ uri: imageUrl }} />
-          <AvatarFallback>
-            <Text>{username![0]}</Text>
-          </AvatarFallback>
         </Avatar>
         <View className="items-center">
           <Text className="font-bold" variant="title1">

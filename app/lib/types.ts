@@ -1,3 +1,5 @@
+export type ChatType = "personal" | "group";
+
 export type User = {
   id: string;
   username: string;
@@ -17,12 +19,19 @@ export type Message = {
 
 export type Chat = {
   id: number;
-  user: User;
+  type: ChatType;
+  groupName?: string;
+  user?: User;
+  participants: {
+    [key: string]: User;
+  };
   messages: Message[];
 };
 
 export type ChatPreview = {
   id: number;
+  type: ChatType;
+  groupName?: string;
+  user?: User;
   lastMessage: Message;
-  user: User;
 };

@@ -8,7 +8,7 @@ import UserItemList from "./UserItemList";
 import { useApi } from "@/lib/hooks/useApi";
 import { User } from "@/lib/types";
 
-const UserItemListWithLink = ({ item }: { item: User }) => {
+const UserItemListCreator = ({ item }: { item: User }) => {
   const router = useRouter();
 
   const { createChat } = useApi();
@@ -16,7 +16,10 @@ const UserItemListWithLink = ({ item }: { item: User }) => {
     mutationFn: createChat,
     onSuccess: ({ chatId }) => {
       router.back();
-      router.push(`/chat/${chatId}`);
+      router.push({
+        pathname: "/chat/[id]",
+        params: { id: chatId, type: "personal" },
+      });
     },
   });
 
@@ -31,4 +34,4 @@ const UserItemListWithLink = ({ item }: { item: User }) => {
   );
 };
 
-export default UserItemListWithLink;
+export default UserItemListCreator;

@@ -12,8 +12,7 @@ import {
 
 import Button from "@/components/Button";
 import Separator from "@/components/Separator";
-import UserItemList from "@/components/UserItemList";
-import UserItemListWithLink from "@/components/UserItemListWithLink";
+import UserItemListCreator from "@/components/UserItemListCreator";
 import { Text } from "@/components/nativewindui/Text";
 import { useApi } from "@/lib/hooks/useApi";
 import { useDebounce } from "@/lib/hooks/useDebounce";
@@ -77,7 +76,7 @@ function NewChatModal() {
           extraData={searchValue}
           keyExtractor={keyExtractor}
           ItemSeparatorComponent={() => <Separator className="ml-[80px]" />}
-          renderItem={(props) => <UserItemListWithLink {...props} />}
+          renderItem={(props) => <UserItemListCreator {...props} />}
           ListEmptyComponent={
             debouncedSearchValue ? (
               isLoading ? (

@@ -2,15 +2,11 @@ import { useAuth, useUser } from "@clerk/clerk-expo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
 import React from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 
 import Button from "@/components/Button";
 import ThemeSwitch from "@/components/ThemeSwitch";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/nativewindui/Avatar";
+import { Avatar, AvatarImage } from "@/components/nativewindui/Avatar";
 import { Text } from "@/components/nativewindui/Text";
 import { useColorScheme } from "@/lib/hooks/useColorScheme";
 
@@ -36,9 +32,6 @@ function Settings() {
               <View className="flex flex-row items-center gap-4">
                 <Avatar alt="your profile image" className="w-10 h-10">
                   <AvatarImage source={{ uri: user?.imageUrl }} />
-                  <AvatarFallback>
-                    <Text>{user?.username![0]}</Text>
-                  </AvatarFallback>
                 </Avatar>
                 <Text variant="title3">{user?.username}</Text>
               </View>

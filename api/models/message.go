@@ -7,6 +7,6 @@ type Message struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UserID    string    `json:"userId"`
 	Content   string    `json:"content"`
-	ChatID    uint      `json:"chatId"`
-	GroupID   uint      `json:"groupId"`
+	ChatID    uint      `json:"chatId" gorm:"default:null"`
+	GroupID   uint      `json:"groupId" gorm:"default:null"`
 }

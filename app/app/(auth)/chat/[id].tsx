@@ -18,7 +18,7 @@ import ChatHeaderTitle, {
 import MessageInput from "@/components/MessageInput";
 import MessageItem from "@/components/MessageItem";
 import { queryClient, useApi } from "@/lib/hooks/useApi";
-import { Chat, Message } from "@/lib/types";
+import { Chat, ChatType, Message } from "@/lib/types";
 import { optimisticallyUpdateChat } from "@/lib/utils";
 
 function keyExtractor(item: Message) {
@@ -27,18 +27,20 @@ function keyExtractor(item: Message) {
 
 function ChatPage() {
   const navigation = useNavigation();
-  const local = useLocalSearchParams<{ id: string }>();
+  const { id, type } = useLocalSearchParams<{ id: string; type: ChatType }>();
   const { user } = useUser();
+
+  console.log("ChatPage", id, type);
 
   const listRef = useRef<FlashList<Message>>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
-  const queryKey = ["chat", { chatId: local.id }];
+  const queryKey = ["chat", { chatId: id }];
 
   const { getChatById, sendMessage } = useApi();
   const { data, isLoading } = useQuery({
     queryKey,
-    queryFn: async () => getChatById({ chatId: parseInt(local.id!, 10) }),
+    queryFn: async () => getChatById({ chatId: parseInt(id!, 10) }),
   });
 
   useLayoutEffect(() => {
@@ -51,7 +53,7 @@ function ChatPage() {
                 href={{
                   pathname: "/chat/info",
                   params: {
-                    chatId: local.id,
+                    chatId: id,
                     username: data.user.username,
                     imageUrl: data.user.imageUrl,
                     email: data.user.email,
@@ -106,7 +108,7 @@ function ChatPage() {
 
   async function onSubmit({ content }: { content: string }) {
     await sendMessageMutation.mutateAsync({
-      chatId: parseInt(local.id!, 10),
+      chatId: parseInt(id!, 10),
       content,
     });
   }

@@ -80,11 +80,35 @@ export function useApi() {
     return data;
   }
 
+  async function createGroup({
+    groupName,
+    userIds,
+  }: {
+    groupName: string;
+    userIds: string[];
+  }) {
+    const { data } = await apiClient.post<{ groupId: number }>(
+      "/group",
+      {
+        groupName,
+        userIds,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      },
+    );
+
+    return data;
+  }
+
   return {
     searchUser,
     getChats,
     createChat,
     getChatById,
     sendMessage,
+    createGroup,
   };
 }

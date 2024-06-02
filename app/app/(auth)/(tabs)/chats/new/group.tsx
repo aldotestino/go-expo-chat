@@ -1,6 +1,6 @@
 import { FlashList } from "@shopify/flash-list";
-import { useQuery } from "@tanstack/react-query";
-import { useNavigation } from "expo-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigation, useRouter } from "expo-router";
 import { cssInterop } from "nativewind";
 import { useLayoutEffect, useMemo, useState } from "react";
 import {
@@ -60,10 +60,24 @@ function NewChatModal() {
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [groupName, setGroupName] = useState("");
 
-  function onPress() {
-    console.log({
+  const router = useRouter();
+  const { createGroup } = useApi();
+  const createGroupMutation = useMutation({
+    mutationFn: createGroup,
+    onSuccess: ({ groupId }) => {
+      router.back();
+      router.back();
+      router.push({
+        pathname: "/chat/[id]",
+        params: { id: groupId, type: "group" },
+      });
+    },
+  });
+
+  async function onPress() {
+    await createGroupMutation.mutateAsync({
       groupName,
-      selectedUsers: selectedUsers.map((user) => user.id),
+      userIds: selectedUsers.map((user) => user.id),
     });
   }
 

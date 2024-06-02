@@ -113,7 +113,7 @@ func (s *PostgresChatStore) GetGroupChats(UserId string) ([]*lib.RawChatPreview,
 		}
 
 		var lastMessage models.Message
-		lastMessageQuery := s.db.Model(&models.Message{}).Where("chat_id = ?", group.ID).Last(&lastMessage)
+		lastMessageQuery := s.db.Model(&models.Message{}).Where("group_id = ?", group.ID).Last(&lastMessage)
 
 		if lastMessageQuery.Error != nil {
 			if lastMessageQuery.Error != gorm.ErrRecordNotFound {
