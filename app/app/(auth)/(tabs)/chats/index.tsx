@@ -1,14 +1,16 @@
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
 import { cssInterop } from "nativewind";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  View,
 } from "react-native";
 
 import ChatItemList from "@/components/ChatItemList";
+import Chip from "@/components/Chip";
 import EmptyChat from "@/components/EmptyChat";
 import Separator from "@/components/Separator";
 import { useApi } from "@/lib/hooks/useApi";
@@ -36,14 +38,17 @@ function ChatList() {
     queryFn: getChats,
   });
 
+  const [filter, setFilter] = useState<"all" | "groups">("all");
+
   const filteredData = useMemo(
     () =>
       data?.filter(
         (c) =>
-          c.user?.username.toLowerCase().includes(searchValue.toLowerCase()) ||
-          c.groupName?.toLowerCase().includes(searchValue.toLowerCase()),
+          (filter === "groups" ? c.type === "group" : true) &&
+          (c.user?.username.toLowerCase().includes(searchValue.toLowerCase()) ||
+            c.groupName?.toLowerCase().includes(searchValue.toLowerCase())),
       ),
-    [data, searchValue],
+    [data, searchValue, filter],
   );
 
   return (
@@ -52,6 +57,19 @@ function ChatList() {
       className="flex-1"
     >
       <FlashList
+        ListHeaderComponent={() => (
+          <View className="px-4 flex-row gap-2 pb-2">
+            <Chip selected={filter === "all"} onPress={() => setFilter("all")}>
+              All
+            </Chip>
+            <Chip
+              selected={filter === "groups"}
+              onPress={() => setFilter("groups")}
+            >
+              Groups
+            </Chip>
+          </View>
+        )}
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
         data={filteredData}
